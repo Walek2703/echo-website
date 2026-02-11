@@ -446,55 +446,6 @@
                         <input type="email" class="email-input" placeholder="your@email.com" required>
                         <button type="submit" class="submit-btn">Get Early Access</button>
                     </form>
-
-  
-
-  
-  
-  <!-- Supabase Waitlist Script -->
-
-  <script>
-    // Initialize Supabase
-    const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co"; // Replace with your Supabase URL
-    const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g"; // Replace with your Supabase anon key
-    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
-
-    // Form Elements
-    const form = document.getElementById('waitlist');
-    const emailInput = document.getElementById('email');
-    const messageEl = document.getElementById('message');
-
-    // Handle form submission
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const email = emailInput.value.trim();
-
-      // Simple email validation
-      if (!email.includes('@')) {
-        messageEl.textContent = 'Please enter a valid email.';
-        messageEl.style.color = 'red';
-        return;
-      }
-
-      // Insert email into Supabase
-      const { data, error } = await supabase
-        .from('waitlist')
-        .insert([{ email }]);
-
-      if (error) {
-        if (error.code === '23505') { // unique constraint error
-          messageEl.textContent = 'You are already on the waitlist!';
-        } else {
-          messageEl.textContent = 'Oops! Something went wrong. Try again later.';
-        }
-        messageEl.style.color = 'red';
-      } else {
-        messageEl.textContent = 'Thanks for joining the waitlist!';
-        messageEl.style.color = 'green';
-        form.reset();
-      }
-    });
-  </script>
                 </div>
             </div>
         </section>
