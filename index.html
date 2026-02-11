@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
 <title>Echo - Your Knowledge Base Writes Itself</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;700;900&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -24,74 +24,145 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <style>
-body {
-  font-family: 'IBM Plex Sans', sans-serif;
-  background: #E8D7BE;
-  color: #2D2520;
-  margin: 0;
+:root {
+  --cream: #E8D7BE;
+  --ink: #2D2520;
+  --teal: #2A5F5C;
+  --teal-light: #3D7874;
+  --charcoal: #4A4440;
 }
+
+body {
+  margin: 0;
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+}
+
 .container {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 1100px;
+  margin: auto;
   padding: 4rem 2rem;
 }
-h1 {
+
+h1, h2, h3 {
   font-family: 'Fraunces', serif;
-  font-size: 3rem;
 }
+
+.hero {
+  padding: 6rem 0;
+}
+
 .cta-box {
-  background: #2D2520;
-  color: #E8D7BE;
+  background: var(--ink);
+  color: var(--cream);
   padding: 2rem;
-  margin-top: 2rem;
-  border-radius: 6px;
+  border-radius: 8px;
+  max-width: 600px;
 }
-input {
+
+.email-form {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.email-input {
+  flex: 1;
   padding: 1rem;
-  width: 100%;
-  margin-bottom: 1rem;
   border-radius: 4px;
   border: none;
 }
-button {
-  padding: 1rem;
-  width: 100%;
-  background: #2A5F5C;
+
+.submit-btn {
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  border: none;
+  background: var(--teal);
   color: white;
-  border: none;
-  border-radius: 4px;
   cursor: pointer;
 }
-button:disabled {
+
+.submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
 .message {
   margin-top: 1rem;
   font-weight: 500;
 }
+
 .success { color: #3D7874; }
 .error { color: #ff4d4d; }
+
+.section {
+  padding: 5rem 0;
+}
+
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.problem-card {
+  padding: 2rem;
+  background: rgba(255,255,255,0.5);
+  border-left: 4px solid var(--teal);
+}
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  opacity: 0.7;
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>Stop answering the same questions over and over</h1>
-  <p>Echo automatically creates help articles from your Gmail conversations.</p>
+<header class="container">
+  <h2>Echo</h2>
+</header>
+
+<section class="hero container">
+  <h1>Stop answering the <span style="color: var(--teal);">same questions</span> over and over</h1>
+  <p>Your support team deserves better than copy-pasting responses.</p>
 
   <div class="cta-box">
-    <h2>Join Early Access</h2>
+    <h2>Join the Early Access List</h2>
 
-    <form id="waitlistForm">
-      <input type="email" id="emailInput" placeholder="your@email.com" required />
-      <button type="submit" id="submitBtn">Get Early Access</button>
-      <div id="formMessage" class="message"></div>
+    <form class="email-form" id="waitlistForm">
+      <input type="email" id="emailInput" class="email-input" placeholder="your@email.com" required>
+      <button type="submit" id="submitBtn" class="submit-btn">Get Early Access</button>
     </form>
 
+    <div id="formMessage" class="message"></div>
   </div>
-</div>
+</section>
+
+<section class="section container">
+  <h2>The Problem</h2>
+  <div class="problem-grid">
+    <div class="problem-card">
+      <h3>Endless Repetition</h3>
+      <p>You’ve answered the same question 12 times this week.</p>
+    </div>
+    <div class="problem-card">
+      <h3>Documentation Debt</h3>
+      <p>You know you should write docs — but you don’t have time.</p>
+    </div>
+    <div class="problem-card">
+      <h3>Growing Pains</h3>
+      <p>More customers = more repetition.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2026 Echo. Built for small teams who deserve better tools.
+</footer>
 
 <script>
 document.getElementById("waitlistForm").addEventListener("submit", async function(e) {
@@ -135,6 +206,8 @@ document.getElementById("waitlistForm").addEventListener("submit", async functio
   messageDiv.innerHTML = "You're on the list 🎉";
   messageDiv.className = "message success";
 
+  alert(`Thanks! We'll notify ${email} when Echo goes live.`);
+
   emailInput.value = "";
   submitBtn.disabled = false;
   submitBtn.innerText = "Get Early Access";
@@ -144,4 +217,3 @@ document.getElementById("waitlistForm").addEventListener("submit", async functio
 
 </body>
 </html>
-
