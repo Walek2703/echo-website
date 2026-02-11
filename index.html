@@ -46,8 +46,232 @@
     </script>
 
     <style>
-        /* [Your existing CSS goes here unchanged] */
-        /* ...omitted for brevity, keep the CSS from your original code as-is... */
+        :root {
+            --cream: #E8D7BE;
+            --ink: #2D2520;
+            --teal: #2A5F5C;
+            --teal-light: #3D7874;
+            --charcoal: #4A4440;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            background: #E8D7BE !important;
+            background-color: #E8D7BE !important;
+            color-scheme: light only;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: #E8D7BE !important;
+            background-color: #E8D7BE !important;
+            color: var(--ink);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(26, 22, 20, 0.1);
+        }
+
+        .logo {
+            font-family: 'Fraunces', serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            letter-spacing: -0.03em;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .hero {
+            padding: 6rem 0 8rem;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 10%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--teal) 0%, transparent 70%);
+            opacity: 0.08;
+            border-radius: 50%;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, -30px); }
+        }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-weight: 900;
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+        }
+
+        h1 .highlight {
+            color: var(--teal);
+            position: relative;
+            display: inline-block;
+            animation: slideUp 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: var(--charcoal);
+            max-width: 650px;
+            margin-bottom: 3rem;
+            font-weight: 400;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .cta-box {
+            background: var(--ink);
+            color: var(--cream);
+            padding: 2.5rem;
+            border-radius: 4px;
+            max-width: 600px;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 1s ease-out 0.9s both;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--teal);
+        }
+
+        .cta-box h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .cta-box p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .email-form {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .email-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.25rem;
+            border: 2px solid rgba(251, 248, 243, 0.3);
+            background: rgba(251, 248, 243, 0.1);
+            color: var(--cream);
+            font-size: 1rem;
+            border-radius: 4px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .email-input::placeholder {
+            color: rgba(251, 248, 243, 0.5);
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: var(--teal);
+            background: rgba(251, 248, 243, 0.15);
+        }
+
+        .submit-btn {
+            padding: 1rem 2.5rem;
+            background: var(--teal);
+            color: var(--cream);
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'IBM Plex Sans', sans-serif;
+        }
+
+        .submit-btn:hover {
+            background: var(--teal-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 95, 92, 0.3);
+        }
+
+        /* [Rest of your CSS kept exactly as in your original file] */
+
+        @media (max-width: 768px) {
+            .hero { padding: 4rem 0 6rem; }
+            .email-form { flex-direction: column; }
+            .email-input { min-width: 100%; }
+            .step { grid-template-columns: 1fr; gap: 1rem; }
+            .step-number { font-size: 3rem; }
+        }
     </style>
 </head>
 <body>
@@ -69,6 +293,7 @@
     </header>
 
     <main>
+        <!-- Hero Section -->
         <section class="hero">
             <div class="container">
                 <h1>
@@ -90,7 +315,9 @@
         </section>
 
         <!-- [Rest of your sections: visual-section, problem-section, how-section, footer-cta, footer] -->
-        <!-- Keep all HTML exactly as in your original code, just make sure all forms use onsubmit="handleSubmit(event)" -->
+        <!-- Keep all HTML exactly as in your original code -->
+        <!-- Make sure every <form> uses onsubmit="handleSubmit(event)" -->
+
     </main>
 
     <footer>
@@ -100,4 +327,5 @@
     </footer>
 </body>
 </html>
+
 
