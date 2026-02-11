@@ -446,6 +446,26 @@
                         <input type="email" class="email-input" placeholder="your@email.com" required>
                         <button type="submit" class="submit-btn">Get Early Access</button>
                     </form>
+                    <script>
+async function handleSubmit(event) {
+    event.preventDefault();
+
+    const email = event.target.querySelector('.email-input').value;
+
+    const { data, error } = await supabase
+        .from('waitlist')
+        .insert([{ email: email }]);
+
+    if (error) {
+        console.error(error);
+        alert("Something went wrong. Try again.");
+        return;
+    }
+
+    alert("You're on the list 🎉");
+    event.target.reset();
+}
+</script>
                 </div>
             </div>
         </section>
