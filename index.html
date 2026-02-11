@@ -8,6 +8,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;700;900&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.2.0/dist/supabase.min.js"></script>
 
+    <script>
+  // Replace with your Supabase URL and anon key
+  const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g";
+  
+  const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+</script>
+
+
     <style>
         :root {
             --cream: #E8D7BE;
@@ -437,6 +446,34 @@
                         <input type="email" class="email-input" placeholder="your@email.com" required>
                         <button type="submit" class="submit-btn">Get Early Access</button>
                     </form>
+
+                     <!-- Script to handle submission -->
+                    <script>
+  const form = document.getElementById('waitlist-form');
+  const messageEl = document.getElementById('message');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+
+    if (!email.includes('@')) {
+      messageEl.textContent = 'Please enter a valid email.';
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from('waitlist')
+      .insert([{ email }]);
+
+    if (error) {
+      messageEl.textContent = error.message;
+    } else {
+      messageEl.textContent = 'Thanks for joining the waitlist!';
+      form.reset();
+    }
+  });
+</script>
+
                 </div>
             </div>
         </section>
