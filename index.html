@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.2.0/dist/supabase.min.js"></script>
 
     <script>
-  // Replace with your Supabase URL and anon key
+  
   const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
   const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g";
   
@@ -447,33 +447,63 @@
                         <button type="submit" class="submit-btn">Get Early Access</button>
                     </form>
 
-                     <!-- Script to handle submission -->
-                    <script>
-  const form = document.getElementById('waitlist-form');
-  const messageEl = document.getElementById('message');
+         <!-- Waitlist Form Section -->
+  <!-- ===================== -->
+  <section class="waitlist">
+    <h2>Join the Waitlist</h2>
+    <form id="waitlist-form">
+      <input type="email" id="email" placeholder="Enter your email" required>
+      <button type="submit">Join Waitlist</button>
+    </form>
+    <p id="message"></p>
+  </section>
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
+  
+  
+  <!-- Supabase Waitlist Script -->
 
-    if (!email.includes('@')) {
-      messageEl.textContent = 'Please enter a valid email.';
-      return;
-    }
+  <script>
+    // Initialize Supabase
+    const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co"; // Replace with your Supabase URL
+    const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g"; // Replace with your Supabase anon key
+    const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-    const { data, error } = await supabase
-      .from('waitlist')
-      .insert([{ email }]);
+    // Form Elements
+    const form = document.getElementById('waitlist-form');
+    const emailInput = document.getElementById('email');
+    const messageEl = document.getElementById('message');
 
-    if (error) {
-      messageEl.textContent = error.message;
-    } else {
-      messageEl.textContent = 'Thanks for joining the waitlist!';
-      form.reset();
-    }
-  });
-</script>
+    // Handle form submission
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
 
+      // Simple email validation
+      if (!email.includes('@')) {
+        messageEl.textContent = 'Please enter a valid email.';
+        messageEl.style.color = 'red';
+        return;
+      }
+
+      // Insert email into Supabase
+      const { data, error } = await supabase
+        .from('waitlist')
+        .insert([{ email }]);
+
+      if (error) {
+        if (error.code === '23505') { // unique constraint error
+          messageEl.textContent = 'You are already on the waitlist!';
+        } else {
+          messageEl.textContent = 'Oops! Something went wrong. Try again later.';
+        }
+        messageEl.style.color = 'red';
+      } else {
+        messageEl.textContent = 'Thanks for joining the waitlist!';
+        messageEl.style.color = 'green';
+        form.reset();
+      }
+    });
+  </script>
                 </div>
             </div>
         </section>
