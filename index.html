@@ -2,10 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <meta name="color-scheme" content="light">
     <title>Echo - Your Knowledge Base Writes Itself</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;700;900&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+   
+
+
     <style>
         :root {
             --cream: #E8D7BE;
@@ -36,6 +39,7 @@
             overflow-x: hidden;
         }
 
+        /* Decorative grain texture */
         body::before {
             content: '';
             position: fixed;
@@ -56,6 +60,7 @@
             z-index: 2;
         }
 
+        /* Header */
         header {
             padding: 2rem 0;
             border-bottom: 1px solid rgba(26, 22, 20, 0.1);
@@ -77,6 +82,7 @@
             height: 36px;
         }
 
+        /* Hero Section */
         .hero {
             padding: 6rem 0 8rem;
             position: relative;
@@ -113,41 +119,80 @@
 
         h1 .highlight {
             color: var(--teal);
+            position: relative;
+            display: inline-block;
+            animation: slideUp 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .subtitle {
-            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            font-size: 1.4rem;
             color: var(--charcoal);
-            max-width: 700px;
+            max-width: 650px;
             margin-bottom: 3rem;
+            font-weight: 400;
+            animation: fadeIn 1s ease-out 0.6s both;
         }
 
-        h2 {
-            font-family: 'Fraunces', serif;
-            font-weight: 700;
-            font-size: clamp(2rem, 5vw, 3rem);
-            line-height: 1.2;
-            margin-bottom: 2rem;
-            color: var(--ink);
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
+        /* CTA Section */
         .cta-box {
-            max-width: 600px;
-            background: rgba(255, 255, 255, 0.4);
+            background: var(--ink);
+            color: var(--cream);
             padding: 2.5rem;
-            border-radius: 16px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(42, 95, 92, 0.1);
+            border-radius: 4px;
+            max-width: 600px;
+            margin-top: 3rem;
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 1s ease-out 0.9s both;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .cta-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--teal);
         }
 
         .cta-box h2 {
+            font-family: 'Fraunces', serif;
             font-size: 1.8rem;
             margin-bottom: 1rem;
+            font-weight: 700;
         }
 
         .cta-box p {
             margin-bottom: 1.5rem;
-            color: var(--charcoal);
+            opacity: 0.9;
         }
 
         .email-form {
@@ -159,123 +204,156 @@
         .email-input {
             flex: 1;
             min-width: 250px;
-            padding: 1rem 1.5rem;
+            padding: 1rem 1.25rem;
+            border: 2px solid rgba(251, 248, 243, 0.3);
+            background: rgba(251, 248, 243, 0.1);
+            color: var(--cream);
             font-size: 1rem;
-            border: 2px solid var(--teal);
-            border-radius: 8px;
-            background: white;
+            border-radius: 4px;
             font-family: 'IBM Plex Sans', sans-serif;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+        }
+
+        .email-input::placeholder {
+            color: rgba(251, 248, 243, 0.5);
         }
 
         .email-input:focus {
             outline: none;
-            box-shadow: 0 0 0 4px rgba(42, 95, 92, 0.1);
+            border-color: var(--teal);
+            background: rgba(251, 248, 243, 0.15);
         }
 
         .submit-btn {
-            padding: 1rem 2rem;
-            font-size: 1rem;
-            font-weight: 500;
+            padding: 1rem 2.5rem;
             background: var(--teal);
             color: var(--cream);
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
             cursor: pointer;
+            transition: all 0.3s ease;
             font-family: 'IBM Plex Sans', sans-serif;
-            transition: all 0.2s;
-            white-space: nowrap;
         }
 
         .submit-btn:hover {
             background: var(--teal-light);
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 95, 92, 0.3);
         }
 
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        /* Visual Section */
+        .visual-section {
+            padding: 4rem 0;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .visual-section img {
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(42, 95, 92, 0.1);
+        }
+
+        /* Problem Section */
+        .problem-section {
+            padding: 6rem 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(42, 95, 92, 0.04) 100%);
         }
 
         .section-label {
             font-size: 0.875rem;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.15em;
             color: var(--teal);
-            font-weight: 500;
             margin-bottom: 1rem;
+            font-weight: 500;
         }
 
-        .problem-section, .how-section, .visual-section {
-            padding: 6rem 0;
-        }
-
-        .problem-section {
-            background: rgba(255, 255, 255, 0.3);
+        h2 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
         }
 
         .problem-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             margin-top: 3rem;
         }
 
         .problem-card {
-            background: rgba(255, 255, 255, 0.6);
             padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid rgba(42, 95, 92, 0.1);
+            border-left: 3px solid rgba(42, 95, 92, 0.3);
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .problem-card:hover {
+            transform: translateX(8px);
+            border-left-color: var(--teal);
         }
 
         .problem-card h3 {
             font-family: 'Fraunces', serif;
             font-size: 1.5rem;
-            margin-bottom: 1rem;
-            color: var(--ink);
+            margin-bottom: 0.75rem;
+            font-weight: 700;
         }
 
         .problem-card p {
             color: var(--charcoal);
+            line-height: 1.7;
+        }
+
+        /* How it works */
+        .how-section {
+            padding: 6rem 0;
         }
 
         .step {
-            display: flex;
+            display: grid;
+            grid-template-columns: 80px 1fr;
             gap: 2rem;
-            align-items: flex-start;
             margin-bottom: 3rem;
-            max-width: 700px;
+            align-items: start;
         }
 
         .step-number {
             font-family: 'Fraunces', serif;
-            font-size: 3rem;
+            font-size: 4rem;
             font-weight: 900;
             color: var(--teal);
             opacity: 0.3;
             line-height: 1;
-            flex-shrink: 0;
         }
 
         .step-content h3 {
             font-family: 'Fraunces', serif;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             margin-bottom: 0.75rem;
-            color: var(--ink);
+            font-weight: 700;
         }
 
         .step-content p {
+            font-size: 1.1rem;
             color: var(--charcoal);
+            line-height: 1.7;
         }
 
+        /* Footer CTA */
         .footer-cta {
-            padding: 6rem 0;
+            padding: 6rem 0 4rem;
             text-align: center;
-            background: rgba(42, 95, 92, 0.05);
+            border-top: 1px solid rgba(26, 22, 20, 0.1);
         }
 
         .footer-cta h2 {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         .footer-cta p {
@@ -287,32 +365,36 @@
         .footer-email-form {
             max-width: 500px;
             margin: 0 auto;
-            justify-content: center;
         }
 
         footer {
-            padding: 3rem 0;
-            border-top: 1px solid rgba(26, 22, 20, 0.1);
+            padding: 2rem 0;
             text-align: center;
             color: var(--charcoal);
+            font-size: 0.9rem;
+            opacity: 0.7;
         }
 
         @media (max-width: 768px) {
             .hero {
                 padding: 4rem 0 6rem;
             }
+
             .email-form {
                 flex-direction: column;
             }
+
             .email-input {
                 min-width: 100%;
             }
+
             .step {
-                flex-direction: column;
+                grid-template-columns: 1fr;
                 gap: 1rem;
             }
+
             .step-number {
-                font-size: 2rem;
+                font-size: 3rem;
             }
         }
     </style>
@@ -321,10 +403,18 @@
     <header>
         <div class="container">
             <div class="logo">
-                <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="50" cy="50" r="35" stroke="#2A5F5C" stroke-width="4" fill="none"/>
-                    <circle cx="50" cy="50" r="25" stroke="#2A5F5C" stroke-width="3" fill="none" opacity="0.6"/>
-                    <circle cx="50" cy="50" r="15" fill="#2A5F5C"/>
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Outer wave -->
+                    <path d="M4 20C4 11.163 11.163 4 20 4C28.837 4 36 11.163 36 20C36 28.837 28.837 36 20 36C11.163 36 4 28.837 4 20Z" 
+                          stroke="#2A5F5C" stroke-width="1.5" fill="none" opacity="0.3"/>
+                    <!-- Middle wave -->
+                    <path d="M8 20C8 13.373 13.373 8 20 8C26.627 8 32 13.373 32 20C32 26.627 26.627 32 20 32C13.373 32 8 26.627 8 20Z" 
+                          stroke="#2A5F5C" stroke-width="2" fill="none" opacity="0.5"/>
+                    <!-- Inner wave -->
+                    <path d="M12 20C12 15.582 15.582 12 20 12C24.418 12 28 15.582 28 20C28 24.418 24.418 28 20 28C15.582 28 12 24.418 12 20Z" 
+                          stroke="#2A5F5C" stroke-width="2.5" fill="none" opacity="0.7"/>
+                    <!-- Center dot -->
+                    <circle cx="20" cy="20" r="4" fill="#2A5F5C"/>
                 </svg>
                 Echo
             </div>
@@ -334,13 +424,17 @@
     <main>
         <section class="hero">
             <div class="container">
-                <h1>Your knowledge base <span class="highlight">writes itself</span></h1>
-                <p class="subtitle">Stop answering the same questions over email. Echo turns your Gmail support conversations into help articles—automatically.</p>
+                <h1>
+                    Stop answering the <span class="highlight">same questions</span> over and over
+                </h1>
+                <p class="subtitle">
+                    Your support team deserves better than copy-pasting responses. Echo automatically creates help articles from your Gmail conversations—so you never answer the same question twice.
+                </p>
 
                 <div class="cta-box">
                     <h2>Join the Early Access List</h2>
                     <p>We're building Echo for small teams using Gmail for support. Get notified when we launch.</p>
-                    <form class="email-form" id="emailForm">
+                    <form class="email-form" onsubmit="handleSubmit(event)">
                         <input type="email" class="email-input" placeholder="your@email.com" required>
                         <button type="submit" class="submit-btn">Get Early Access</button>
                     </form>
@@ -348,19 +442,37 @@
             </div>
         </section>
 
+        <section class="visual-section">
+            <div class="container">
+                <div class="section-label">The Product</div>
+                <h2 style="margin-bottom: 3rem; text-align: center;">See Echo in action</h2>
+                
+                <div style="margin-bottom: 4rem;">
+                    <h3 style="font-family: 'Fraunces', serif; font-size: 1.5rem; margin-bottom: 1rem; text-align: center; color: var(--charcoal);">Dashboard - Pattern Detection</h3>
+                    <p style="text-align: center; color: var(--charcoal); margin-bottom: 2rem; max-width: 700px; margin-left: auto; margin-right: auto;">Spot repeated questions automatically and turn them into knowledge base articles with one click.</p>
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAwIiBoZWlnaHQ9IjUwMCIgdmlld0JveD0iMCAwIDgwMCA1MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CiAgPCEtLSBCYWNrZ3JvdW5kIC0tPgogIDxyZWN0IHdpZHRoPSI4MDAiIGhlaWdodD0iNTAwIiBmaWxsPSIjRkFGQUZBIi8+CiAgCiAgPCEtLSBCcm93c2VyIFdpbmRvdyAtLT4KICA8cmVjdCB4PSI1MCIgeT0iNTAiIHdpZHRoPSI3MDAiIGhlaWdodD0iNDAwIiByeD0iOCIgZmlsbD0iI0ZGRkZGRiIgc3Ryb2tlPSIjRTBFMEUwIiBzdHJva2Utd2lkdGg9IjIiLz4KICAKICA8IS0tIEJyb3dzZXIgY2hyb21lIC0tPgogIDxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjcwMCIgaGVpZ2h0PSIzMCIgcng9IjgiIGZpbGw9IiNGNUY1RjUiLz4KICA8Y2lyY2xlIGN4PSI3MCIgY3k9IjY1IiByPSI0IiBmaWxsPSIjRkY1RjU3Ii8+CiAgPGNpcmNsZSBjeD0iODUiIGN5PSI2NSIgcj0iNCIgZmlsbD0iI0ZFQkMyRSIvPgogIDxjaXJjbGUgY3g9IjEwMCIgY3k9IjY1IiByPSI0IiBmaWxsPSIjMjhDODQwIi8+CiAgCiAgPCEtLSBVUkwgYmFyIC0tPgogIDxyZWN0IHg9IjEyMCIgeT0iNTciIHdpZHRoPSIzMDAiIGhlaWdodD0iMTYiIHJ4PSI4IiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiNFMEUwRTAiLz4KICA8dGV4dCB4PSIxMzAiIHk9IjY4IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzk5OSI+ZWNoby5hcHAvZGFzaGJvYXJkPC90ZXh0PgogIAogIDwhLS0gU2lkZWJhciAtLT4KICA8cmVjdCB4PSI1MCIgeT0iODAiIHdpZHRoPSIxNTAiIGhlaWdodD0iMzcwIiBmaWxsPSIjRkFGQUZBIi8+CiAgCiAgPCEtLSBMb2dvIC0tPgogIDxjaXJjbGUgY3g9IjgwIiBjeT0iMTA1IiByPSI2IiBzdHJva2U9IiMyQTVGNUMiIHN0cm9rZS13aWR0aD0iMS41IiBmaWxsPSJub25lIi8+CiAgPGNpcmNsZSBjeD0iODAiIGN5PSIxMDUiIHI9IjMiIGZpbGw9IiMyQTVGNUMiLz4KICA8dGV4dCB4PSI5NSIgeT0iMTEwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZm9udC13ZWlnaHQ9IjYwMCIgZmlsbD0iIzFBMTYxNCI+RWNobzwvdGV4dD4KICAKICA8IS0tIE5hdiAtLT4KICA8cmVjdCB4PSI2MCIgeT0iMTMwIiB3aWR0aD0iMTMwIiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzJBNUY1QyIgZmlsbC1vcGFjaXR5PSIwLjEiLz4KICA8dGV4dCB4PSI3MCIgeT0iMTQ2IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzJBNUY1QyI+RGFzaGJvYXJkPC90ZXh0PgogIDx0ZXh0IHg9IjcwIiB5PSIxNzYiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjExIiBmaWxsPSIjNjY2Ij5EcmFmdCBBcnRpY2xlczwvdGV4dD4KICA8dGV4dCB4PSI3MCIgeT0iMjA2IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMSIgZmlsbD0iIzY2NiI+S25vd2xlZGdlIEJhc2U8L3RleHQ+CiAgCiAgPCEtLSBNYWluIGNvbnRlbnQgLS0+CiAgPHRleHQgeD0iMjIwIiB5PSIxMTAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMUExNjE0Ij5EYXNoYm9hcmQ8L3RleHQ+CiAgCiAgPCEtLSBTdGF0cyBjYXJkcyAtLT4KICA8cmVjdCB4PSIyMjAiIHk9IjEzMCIgd2lkdGg9IjE2MCIgaGVpZ2h0PSI3MCIgcng9IjYiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iI0UwRTBFMCIvPgogIDx0ZXh0IHg9IjIzMCIgeT0iMTUwIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZmlsbD0iIzY2NiI+UXVlc3Rpb25zIERldGVjdGVkPC90ZXh0PgogIDx0ZXh0IHg9IjIzMCIgeT0iMTc1IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyOCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzJBNUY1QyI+MjQ8L3RleHQ+CiAgCiAgPHJlY3QgeD0iMzkwIiB5PSIxMzAiIHdpZHRoPSIxNjAiIGhlaWdodD0iNzAiIHJ4PSI2IiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiNFMEUwRTAiLz4KICA8dGV4dCB4PSI0MDAiIHk9IjE1MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2NjYiPkFydGljbGVzIENyZWF0ZWQ8L3RleHQ+CiAgPHRleHQgeD0iNDAwIiB5PSIxNzUiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjI4IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMkE1RjVDIj44PC90ZXh0PgogIAogIDxyZWN0IHg9IjU2MCIgeT0iMTMwIiB3aWR0aD0iMTYwIiBoZWlnaHQ9IjcwIiByeD0iNiIgZmlsbD0iI0ZGRkZGRiIgc3Ryb2tlPSIjRTBFMEUwIi8+CiAgPHRleHQgeD0iNTcwIiB5PSIxNTAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmaWxsPSIjNjY2Ij5UaW1lIFNhdmVkPC90ZXh0PgogIDx0ZXh0IHg9IjU3MCIgeT0iMTc1IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIyOCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzJBNUY1QyI+My4yaDwvdGV4dD4KICAKICA8IS0tIFBhdHRlcm4gc2VjdGlvbiAtLT4KICA8dGV4dCB4PSIyMjAiIHk9IjIzMCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiMxQTE2MTQiPlJlY2VudCBQYXR0ZXJuczwvdGV4dD4KICAKICA8IS0tIFBhdHRlcm4gY2FyZCAtLT4KICA8cmVjdCB4PSIyMjAiIHk9IjI0NSIgd2lkdGg9IjUwMCIgaGVpZ2h0PSI2MCIgcng9IjYiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iI0UwRTBFMCIvPgogIDxjaXJjbGUgY3g9IjI0NSIgY3k9IjI3NSIgcj0iMTIiIGZpbGw9IiMyQTVGNUMiIGZpbGwtb3BhY2l0eT0iMC4xIi8+CiAgPHRleHQgeD0iMjQ1IiB5PSIyODAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMkE1RjVDIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj4xMjwvdGV4dD4KICA8dGV4dCB4PSIyNzAiIHk9IjI3MCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTIiIGZvbnQtd2VpZ2h0PSI2MDAiIGZpbGw9IiMxQTE2MTQiPkhvdyBkbyBJIHJlc2V0IG15IHBhc3N3b3JkPzwvdGV4dD4KICA8dGV4dCB4PSIyNzAiIHk9IjI4OCIgZm9udC1mYW1pbHk9InNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTAiIGZpbGw9IiM2NjYiPkFza2VkIDEyIHRpbWVzIGluIHRoZSBsYXN0IDcgZGF5czwvdGV4dD4KICA8cmVjdCB4PSI2NDAiIHk9IjI2MyIgd2lkdGg9IjY1IiBoZWlnaHQ9IjI0IiByeD0iNCIgZmlsbD0iIzJBNUY1QyIvPgogIDx0ZXh0IHg9IjY3MiIgeT0iMjc5IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMCIgZmlsbD0iI0ZGRkZGRiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+Q3JlYXRlPC90ZXh0Pgo8L3N2Zz4K" alt="Echo Dashboard" style="width: 100%; max-width: 800px; height: auto; margin: 0 auto; display: block; border-radius: 12px; box-shadow: 0 20px 60px rgba(42, 95, 92, 0.15);"/>
+                </div>
+                
+                <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: rgba(255,255,255,0.5); border-radius: 12px;">
+                    <h3 style="font-family: 'Fraunces', serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--charcoal);">AI-Powered Article Editor</h3>
+                    <p style="color: var(--charcoal); margin-bottom: 0; max-width: 600px; margin-left: auto; margin-right: auto;">Review and publish AI-generated help articles based on your actual support conversations. Edit drafts, see insights on question patterns, and publish with one click.</p>
+                </div>
+            </div>
+        </section>
+
         <section class="problem-section">
             <div class="container">
                 <div class="section-label">The Problem</div>
-                <h2>Small teams drown in repetitive support emails</h2>
+                <h2>Small teams, endless questions</h2>
                 
                 <div class="problem-grid">
                     <div class="problem-card">
-                        <h3>The Email Loop</h3>
-                        <p>You're answering "How do I reset my password?" for the 47th time this month. Each response takes 5 minutes you don't have.</p>
+                        <h3>Endless Repetition</h3>
+                        <p>You've explained "How do I reset my password?" seventeen times this month. It still feels like work every single time.</p>
                     </div>
                     <div class="problem-card">
-                        <h3>The Knowledge Gap</h3>
-                        <p>You know you need a help center, but creating one means writing dozens of articles from scratch—work that never seems urgent until you're drowning.</p>
+                        <h3>Documentation Debt</h3>
+                        <p>You know you should write help docs, but who has time? Support is already overwhelming without adding "content creation" to the list.</p>
                     </div>
                     <div class="problem-card">
                         <h3>Growing Pains</h3>
@@ -374,6 +486,7 @@
             <div class="container">
                 <div class="section-label">How It Works</div>
                 <h2>Three steps to stop the cycle</h2>
+
 
                 <div class="step">
                     <div class="step-number">1</div>
@@ -405,7 +518,7 @@
             <div class="container">
                 <h2>Ready to reclaim your time?</h2>
                 <p>Join teams who are building their knowledge base without the busywork.</p>
-                <form class="email-form footer-email-form" id="emailFormFooter">
+                <form class="email-form footer-email-form" onsubmit="handleSubmit(event)">
                     <input type="email" class="email-input" placeholder="your@email.com" required>
                     <button type="submit" class="submit-btn">Get Early Access</button>
                 </form>
@@ -419,74 +532,6 @@
         </div>
     </footer>
 
-    <!-- Supabase Client Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script>
-        // ⚠️ IMPORTANT: Replace 'YOUR_ANON_KEY_HERE' with your actual Supabase anon public key
-        // Get it from: Supabase Dashboard → Settings → API → "anon public" key
-        
-        const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
-        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';  // ← REPLACE THIS!
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        async function handleSubmit(event) {
-            event.preventDefault();
-            const email = event.target.querySelector('.email-input').value;
-            const submitButton = event.target.querySelector('.submit-btn');
-            
-            // Check if Supabase key is configured
-            if (SUPABASE_ANON_KEY === 'YOUR_ANON_KEY_HERE') {
-                alert('⚠️ SETUP REQUIRED\n\nPlease add your Supabase anon key to line 409 of this HTML file.\n\nGet it from: Supabase → Settings → API → "anon public" key');
-                console.error('🔴 SETUP REQUIRED: Replace YOUR_ANON_KEY_HERE with your actual Supabase anon key on line 409');
-                return;
-            }
-            
-            // Disable button and show loading state
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-            
-            console.log('📧 Attempting to save email:', email);
-            
-            try {
-                // Insert email into Supabase
-                const { data, error } = await supabase
-                    .from('early_access')
-                    .insert([{ email: email }])
-                    .select();
-                
-                if (error) {
-                    console.error('❌ Supabase error:', error);
-                    
-                    // Provide helpful error messages
-                    if (error.code === '42P01') {
-                        alert('⚠️ DATABASE ERROR\n\nThe "early_access" table doesn\'t exist yet.\n\nPlease run the SQL code in Supabase to create it.');
-                        console.error('🔴 Table missing: Run the SQL code to create the early_access table');
-                    } else if (error.code === '23505') {
-                        alert('✅ This email is already on the list!');
-                        event.target.reset();
-                    } else {
-                        alert(`❌ Error: ${error.message}\n\nCheck the browser console for details.`);
-                    }
-                } else {
-                    console.log('✅ Email saved successfully!', data);
-                    alert(`🎉 Thanks for your interest!\n\nWe'll notify ${email} when we launch.`);
-                    event.target.reset();
-                }
-            } catch (err) {
-                console.error('❌ Unexpected error:', err);
-                alert('❌ Something went wrong. Check the browser console (F12) for details.');
-            } finally {
-                // Re-enable button
-                submitButton.disabled = false;
-                submitButton.textContent = 'Get Early Access';
-            }
-        }
-
-        // Attach handler to both forms
-        document.getElementById('emailForm').addEventListener('submit', handleSubmit);
-        document.getElementById('emailFormFooter').addEventListener('submit', handleSubmit);
-    </script>
 </body>
 </html>
