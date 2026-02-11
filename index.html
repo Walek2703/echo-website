@@ -6,25 +6,14 @@
     <meta name="color-scheme" content="light">
     <title>Echo - Your Knowledge Base Writes Itself</title>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;700;900&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.2.0/dist/supabase.min.js"></script>
-
-    <script>
-  
+<script>
   const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g";
-  <script>
-  const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g";
-
-  <script>
-  const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4gY";
-
-  const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
-
+  const supabaseAnonKey = "YeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g"; 
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 </script>
-
-
+  
     <style>
         :root {
             --cream: #E8D7BE;
@@ -455,25 +444,7 @@
                         <button type="submit" class="submit-btn">Get Early Access</button>
                     </form>
                     <script>
-async function handleSubmit(event) {
-    event.preventDefault();
 
-    const email = event.target.querySelector('.email-input').value;
-
-    const { data, error } = await supabase
-        .from('waitlist')
-        .insert([{ email: email }]);
-
-    if (error) {
-        console.error(error);
-        alert("Something went wrong. Try again.");
-        return;
-    }
-
-    alert("You're on the list 🎉");
-    event.target.reset();
-}
-</script>
                 </div>
             </div>
         </section>
@@ -568,25 +539,6 @@ async function handleSubmit(event) {
         </div>
     </footer>
 
-    <script>
-async function handleSubmit(event) {
-    event.preventDefault();
-
-    const email = event.target.querySelector('.email-input').value;
-
-    const { data, error } = await supabaseClient
-        .from('waitlist')
-        .insert([{ email }]);
-
-    if (error) {
-        console.error(error);
-        alert("Something went wrong. Try again.");
-        return;
-    }
-
-    alert("You're on the list 🎉");
-    event.target.reset();
-}
 
 </body>
 </html>
