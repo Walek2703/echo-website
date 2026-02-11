@@ -435,7 +435,8 @@
                     <h2>Join the Early Access List</h2>
                     <p>We're building Echo for small teams using Gmail for support. Get notified when we launch.</p>
                     
-                    <form class="email-form" onsubmit="handleSubmit(event)">
+                    <form class="email-form">
+
                         <input type="email" class="email-input" placeholder="your@email.com" required>
                         <button type="submit" class="submit-btn">Get Early Access</button>
                     </form>
@@ -533,16 +534,20 @@
         </div>
     </footer>
 
- <script>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
   const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
-  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g"; // paste your anon key again here
+  const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g";
 
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-  async function handleSubmit(event) {
+  const form = document.querySelector('.email-form');
+
+  form.addEventListener('submit', async function (event) {
     event.preventDefault();
 
-    const emailInput = event.target.querySelector('.email-input');
+    const emailInput = form.querySelector('.email-input');
     const email = emailInput.value.trim();
 
     if (!email) {
@@ -550,25 +555,19 @@
       return;
     }
 
-    try {
-      const { error } = await supabaseClient
-        .from('emails')
-        .insert([{ email }]);
+    const { error } = await supabaseClient
+      .from('emails')
+      .insert([{ email }]);
 
-      if (error) {
-        console.error(error);
-        alert("Something went wrong. Check console.");
-        return;
-      }
-
-      alert("Thanks! You'll be notified when we launch 🎉");
-      event.target.reset();
-
-    } catch (err) {
-      console.error("Unexpected error:", err);
-      alert("Unexpected error. See console.");
+    if (error) {
+      console.error(error);
+      alert("Something went wrong.");
+      return;
     }
-  }
+
+    alert("Thanks! You'll be notified when we launch 🎉");
+    form.reset();
+  });
 </script>
 
 
