@@ -565,36 +565,24 @@ async function handleSubmit(event) {
     </footer>
 
     <script>
-        function handleSubmit(event) {
-            event.preventDefault();
-            const email = event.target.querySelector('.email-input').value;
-            
-            // In a real implementation, this would send to your backend
-            alert(`Thanks for your interest! We'll notify ${email} when we launch.`);
-            event.target.reset();
-        }
+async function handleSubmit(event) {
+    event.preventDefault();
 
-        // Intersection Observer for scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -100px 0px'
-        };
+    const email = event.target.querySelector('.email-input').value;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
+    const { data, error } = await supabaseClient
+        .from('waitlist')
+        .insert([{ email }]);
 
-        document.querySelectorAll('.problem-card, .step').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'all 0.8s ease-out';
-            observer.observe(el);
-        });
-    </script>
+    if (error) {
+        console.error(error);
+        alert("Something went wrong. Try again.");
+        return;
+    }
+
+    alert("You're on the list 🎉");
+    event.target.reset();
+}
+
 </body>
 </html>
