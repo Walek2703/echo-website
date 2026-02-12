@@ -520,7 +520,7 @@
             <div class="container">
                 <h2>Ready to reclaim your time?</h2>
                 <p>Join teams who are building their knowledge base without the busywork.</p>
-                <form class="email-form footer-email-form" onsubmit="handleSubmit(event)">
+                <form class="email-form footer-email-form">
                     <input type="email" class="email-input" placeholder="your@email.com" required>
                     <button type="submit" class="submit-btn">Get Early Access</button>
                 </form>
@@ -542,33 +542,36 @@
 
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-  const form = document.querySelector('.email-form');
+  const forms = document.querySelectorAll('.email-form');
 
-  form.addEventListener('submit', async function (event) {
-    event.preventDefault();
+  forms.forEach(form => {
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
 
-    const emailInput = form.querySelector('.email-input');
-    const email = emailInput.value.trim();
+      const emailInput = form.querySelector('.email-input');
+      const email = emailInput.value.trim();
 
-    if (!email) {
-      alert("Please enter a valid email.");
-      return;
-    }
+      if (!email) {
+        alert("Please enter a valid email.");
+        return;
+      }
 
-    const { error } = await supabaseClient
-      .from('emails')
-      .insert([{ email }]);
+      const { error } = await supabaseClient
+        .from('emails')
+        .insert([{ email }]);
 
-    if (error) {
-      console.error(error);
-      alert("Something went wrong.");
-      return;
-    }
+      if (error) {
+        console.error(error);
+        alert("Something went wrong.");
+        return;
+      }
 
-    alert("Thanks! You'll be notified when we launch 🎉");
-    form.reset();
+      alert("Thanks! You'll be notified when we launch 🎉");
+      form.reset();
+    });
   });
 </script>
+
 
 
 
