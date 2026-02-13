@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echo - Your Knowledge Base Writes Itself</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700;900&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --cream: #E8D7BE;
+            --ink: #2D2520;
+            --teal: #2A5F5C;
+            --teal-light: #3D7874;
+            --charcoal: #4A4440;
+            --white: #FFFFFF;
+            --gray-50: #FAFAFA;
+            --gray-100: #F5F5F5;
+            --gray-200: #E0E0E0;
+            --gray-400: #999999;
+            --gray-600: #666666;
+            --yellow: #FFB020;
+            --yellow-light: #FFF4E5;
+            --green: #28C840;
+            --green-light: #E8F5E9;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-layout {
+            display: flex;
+            flex: 1;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Fraunces', serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+            color: var(--ink);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-email {
+            font-size: 0.875rem;
+            color: var(--charcoal);
+        }
+
+        .btn-logout {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.875rem;
+            color: var(--charcoal);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: var(--gray-50);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--gray-50);
+            border-right: 1px solid var(--gray-200);
+            padding: 2rem 1rem;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 6px;
+            color: var(--charcoal);
+            font-size: 0.9375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-item:hover {
+            background: rgba(42, 95, 92, 0.05);
+        }
+
+        .nav-item.active {
+            background: rgba(42, 95, 92, 0.1);
+            color: var(--teal);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 3rem;
+            overflow-y: auto;
+            max-width: 1400px;
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--cream);
+        }
+
+        .login-box {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 520px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(42, 95, 92, 0.15);
+        }
+
+        .login-title {
+            font-family: 'Fraunces', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .login-subtitle {
+            font-size: 1.125rem;
+            color: var(--charcoal);
+            margin-bottom: 2.5rem;
+            line-height: 1.5;
+        }
+
+        .btn-google {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--ink);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .btn-google:hover:not(:disabled) {
+            background: var(--gray-50);
+            border-color: var(--teal);
+            transform: translateY(-1px);
+        }
+
+        .btn-google:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .trust-message {
+            margin-top: 1.5rem;
+            padding: 1rem 1.25rem;
+            background: rgba(42, 95, 92, 0.05);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: var(--charcoal);
+            line-height: 1.6;
+            text-align: left;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            padding: 0.875rem 1.75rem;
+            background: var(--teal);
+            color: var(--cream);
+            border: none;
+            border-radius: 8px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: var(--teal-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            padding: 0.875rem 1.75rem;
+            background: var(--white);
+            color: var(--teal);
+            border: 2px solid var(--teal);
+            border-radius: 8px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(42, 95, 92, 0.05);
+        }
+
+        .btn-ghost {
+            padding: 0.5rem 1rem;
+            background: transparent;
+            color: var(--charcoal);
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-ghost:hover {
+            background: var(--gray-50);
+        }
+
+        /* Page Title */
+        .page-title {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .page-subtitle {
+            font-size: 1rem;
+            color: var(--charcoal);
+            margin-bottom: 2rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--charcoal);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-family: 'Fraunces', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--teal);
+        }
+
+        .stat-change {
+            font-size: 0.8125rem;
+            color: var(--gray-400);
+            margin-top: 0.25rem;
+        }
+
+        /* Question Cards */
+        .questions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            color: var(--charcoal);
+        }
+
+        .filter-select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.875rem;
+            background: var(--white);
+            color: var(--ink);
+            cursor: pointer;
+        }
+
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .question-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.2s;
+        }
+
+        .question-card:hover {
+            box-shadow: 0 4px 12px rgba(42, 95, 92, 0.08);
+        }
+
+        .question-badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(42, 95, 92, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--teal);
+            flex-shrink: 0;
+        }
+
+        .question-content {
+            flex: 1;
+        }
+
+        .question-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 0.25rem;
+        }
+
+        .question-meta {
+            font-size: 0.875rem;
+            color: var(--charcoal);
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* Loading State */
+        .loading-container {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--teal);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--ink);
+        }
+
+        .loading-list {
+            max-width: 400px;
+            margin: 0 auto 1.5rem;
+            text-align: left;
+        }
+
+        .loading-item {
+            padding: 0.5rem 0;
+            font-size: 1rem;
+            color: var(--charcoal);
+        }
+
+        .loading-progress {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--teal);
+            margin-bottom: 0.5rem;
+        }
+
+        .loading-subtext {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+        }
+
+        /* Article Editor */
+        .editor-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 2rem;
+        }
+
+        .editor-main {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .editor-sidebar {
+            background: var(--gray-50);
+            padding: 1.5rem;
+            border-radius: 12px;
+        }
+
+        .editor-title {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+
+        .editor-content {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--ink);
+        }
+
+        .editor-content h3 {
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .editor-content p {
+            margin-bottom: 1rem;
+        }
+
+        .protip-box {
+            margin-top: 2rem;
+            padding: 1.25rem;
+            background: #F0F9FF;
+            border: 1px solid #B3D9FF;
+            border-radius: 8px;
+        }
+
+        .protip-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #0066CC;
+            margin-bottom: 0.5rem;
+        }
+
+        .protip-text {
+            font-size: 0.875rem;
+            color: #0066CC;
+            line-height: 1.6;
+        }
+
+        .edit-hint {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--gray-400);
+        }
+
+        .insight-card {
+            background: var(--white);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--gray-200);
+            margin-bottom: 1rem;
+        }
+
+        .insight-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .insight-text {
+            font-size: 0.875rem;
+            color: var(--charcoal);
+            line-height: 1.5;
+        }
+
+        .insight-subtext {
+            font-size: 0.8125rem;
+            color: var(--gray-400);
+            margin-top: 0.25rem;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.9375rem;
+            color: var(--ink);
+            background: var(--white);
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--teal);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9375rem;
+            color: var(--ink);
+            cursor: pointer;
+        }
+
+        .checkbox-label input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        /* Status Badge */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8125rem;
+            font-weight: 500;
+        }
+
+        .badge-draft {
+            background: var(--yellow-light);
+            color: #CC8A00;
+            border: 1px solid var(--yellow);
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-success {
+            border-left: 4px solid var(--green);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 0.25rem;
+        }
+
+        .toast-message {
+            font-size: 0.875rem;
+            color: var(--charcoal);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .empty-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 1.5rem;
+            display: block;
+        }
+
+        .empty-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--ink);
+        }
+
+        .empty-text {
+            font-size: 1rem;
+            color: var(--charcoal);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Setup Card */
+        .setup-card {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .notion-option {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--gray-50);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .notion-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notion-icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .notion-text {
+            flex: 1;
+        }
+
+        .notion-title {
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 0.25rem;
+        }
+
+        .notion-subtitle {
+            font-size: 0.875rem;
+            color: var(--charcoal);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-layout {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--gray-200);
+                padding: 1rem;
+            }
+            .main-content {
+                padding: 2rem 1rem;
+            }
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Mock data for MVP
+        const MOCK_QUESTIONS = [
+            {
+                id: 1,
+                question: "How do I invite teammates?",
+                frequency: 32,
+                timeRange: 60,
+                sources: ["support@", "hello@"],
+                category: "Getting Started"
+            },
+            {
+                id: 2,
+                question: "Can I export my data?",
+                frequency: 18,
+                timeRange: 60,
+                sources: ["support@"],
+                category: "Features"
+            },
+            {
+                id: 3,
+                question: "Do you support SSO?",
+                frequency: 11,
+                timeRange: 60,
+                sources: ["support@", "founder@"],
+                category: "Security"
+            },
+            {
+                id: 4,
+                question: "How do I reset my password?",
+                frequency: 8,
+                timeRange: 60,
+                sources: ["hello@"],
+                category: "Account & Login"
+            }
+        ];
+
+        const generateArticleContent = (question) => {
+            const articles = {
+                "How do I invite teammates?": {
+                    title: "How to Invite Teammates",
+                    content: `<p>Adding team members to your workspace is quick and easy. Here's how:</p>
+
+<h3>Step 1: Go to Team Settings</h3>
+<p>Click on your profile icon in the top right corner, then select "Team Settings" from the dropdown menu.</p>
+
+<h3>Step 2: Click "Invite Members"</h3>
+<p>You'll see an "Invite Members" button at the top of the team page. Click it to open the invitation modal.</p>
+
+<h3>Step 3: Enter Email Addresses</h3>
+<p>Type in the email addresses of the teammates you want to invite. You can invite multiple people at once by separating emails with commas.</p>
+
+<h3>Step 4: Set Permissions</h3>
+<p>Choose what role each person should have:
+• Admin - Full access to all settings
+• Member - Can view and edit content
+• Guest - Limited access to specific projects</p>
+
+<h3>Step 5: Send Invitations</h3>
+<p>Click "Send Invites" and your teammates will receive an email with instructions to join your workspace.</p>`,
+                    protip: "Set up team folders before inviting members so they know exactly where to find their projects!"
+                },
+                "Can I export my data?": {
+                    title: "How to Export Your Data",
+                    content: `<p>You have full control over your data and can export it anytime. Here's how:</p>
+
+<h3>Step 1: Navigate to Settings</h3>
+<p>Click on Settings in the sidebar, then go to the "Data & Privacy" section.</p>
+
+<h3>Step 2: Select Export Format</h3>
+<p>Choose your preferred export format:
+• CSV - For spreadsheet programs
+• JSON - For developers and integrations
+• PDF - For archiving and sharing</p>
+
+<h3>Step 3: Choose What to Export</h3>
+<p>Select which data you want to include:
+• All content
+• Specific projects
+• User data
+• Activity logs</p>
+
+<h3>Step 4: Request Export</h3>
+<p>Click "Request Export" and we'll prepare your data. Large exports may take a few minutes.</p>
+
+<h3>Step 5: Download Your Data</h3>
+<p>Once ready, you'll receive an email with a secure download link. The link expires after 7 days.</p>`,
+                    protip: "Schedule automatic monthly exports to keep regular backups of your important data."
+                },
+                "Do you support SSO?": {
+                    title: "Single Sign-On (SSO) Integration",
+                    content: `<p>Yes! We support Single Sign-On for Enterprise plans. Here's what you need to know:</p>
+
+<h3>Supported SSO Providers</h3>
+<p>We integrate with all major identity providers:
+• Okta
+• Azure AD
+• Google Workspace
+• OneLogin
+• Auth0
+• Custom SAML 2.0</p>
+
+<h3>How to Set Up SSO</h3>
+<p><strong>Step 1:</strong> Upgrade to an Enterprise plan if you haven't already.</p>
+<p><strong>Step 2:</strong> Go to Settings → Security → SSO Configuration.</p>
+<p><strong>Step 3:</strong> Select your identity provider from the list.</p>
+<p><strong>Step 4:</strong> Follow the provider-specific setup instructions.</p>
+<p><strong>Step 5:</strong> Test the connection and enforce SSO for your team.</p>
+
+<h3>Benefits of SSO</h3>
+<p>• Enhanced security with centralized authentication
+• Streamlined onboarding and offboarding
+• Simplified password management
+• Compliance with enterprise security policies</p>`,
+                    protip: "Enable SCIM provisioning alongside SSO to automatically sync your team members."
+                },
+                "How do I reset my password?": {
+                    title: "How to Reset Your Password",
+                    content: `<p>If you've forgotten your password or need to change it, follow these simple steps:</p>
+
+<h3>Step 1: Navigate to the login page</h3>
+<p>Go to our login page and click on the "Forgot Password?" link below the password field.</p>
+
+<h3>Step 2: Enter your email address</h3>
+<p>Type in the email address associated with your account. Make sure it's the same email you used when signing up.</p>
+
+<h3>Step 3: Check your inbox</h3>
+<p>You'll receive a password reset link within a few minutes. Check your spam folder if you don't see it in your main inbox.</p>
+
+<h3>Step 4: Create a new password</h3>
+<p>Click the link in your email and create a new secure password. Make sure it's at least 8 characters long and includes a mix of letters, numbers, and symbols.</p>`,
+                    protip: "Use a password manager to keep your new password secure and easily accessible across all your devices."
+                }
+            };
+
+            return articles[question] || articles["How do I invite teammates?"];
+        };
+
+        // Toast Component
+        function Toast({ message, subtext, onClose }) {
+            useEffect(() => {
+                const timer = setTimeout(onClose, 5000);
+                return () => clearTimeout(timer);
+            }, [onClose]);
+
+            return (
+                <div className="toast toast-success">
+                    <div className="toast-icon">✅</div>
+                    <div className="toast-content">
+                        <div className="toast-title">{message}</div>
+                        {subtext && <div className="toast-message">{subtext}</div>}
+                    </div>
+                </div>
+            );
+        }
+
+        // Login Component
+        function Login({ onLogin }) {
+            const [loading, setLoading] = useState(false);
+
+            const handleGoogleLogin = async () => {
+                setLoading(true);
+                
+                // Simulate OAuth flow
+                setTimeout(() => {
+                    onLogin({
+                        email: "demo@yourcompany.com",
+                        name: "Demo User"
+                    });
+                }, 1500);
+            };
+
+            return (
+                <div className="login-container">
+                    <div className="login-box">
+                        <div style={{ marginBottom: '2rem' }}>
+                            <svg width="60" height="60" viewBox="0 0 100 100" fill="none" style={{ margin: '0 auto' }}>
+                                <circle cx="50" cy="50" r="35" stroke="#2A5F5C" strokeWidth="4" fill="none"/>
+                                <circle cx="50" cy="50" r="25" stroke="#2A5F5C" strokeWidth="3" fill="none" opacity="0.6"/>
+                                <circle cx="50" cy="50" r="15" fill="#2A5F5C"/>
+                            </svg>
+                        </div>
+                        
+                        <h1 className="login-title">Welcome to Echo</h1>
+                        <p className="login-subtitle">Your inbox tells you what docs you should write.</p>
+                        
+                        <button className="btn-google" onClick={handleGoogleLogin} disabled={loading}>
+                            <svg width="20" height="20" viewBox="0 0 20 20">
+                                <path fill="#4285F4" d="M19.6 10.23c0-.82-.1-1.42-.25-2.05H10v3.72h5.5c-.15.96-.74 2.31-2.04 3.22v2.45h3.16c1.89-1.73 2.98-4.3 2.98-7.34z"/>
+                                <path fill="#34A853" d="M13.46 15.13c-.83.59-1.96 1-3.46 1-2.64 0-4.88-1.74-5.68-4.15H1.07v2.52C2.72 17.75 6.09 20 10 20c2.7 0 4.96-.89 6.62-2.42l-3.16-2.45z"/>
+                                <path fill="#FBBC05" d="M3.99 10c0-.69.12-1.35.32-1.97V5.51H1.07A9.973 9.973 0 000 10c0 1.61.39 3.14 1.07 4.49l3.24-2.52c-.2-.62-.32-1.28-.32-1.97z"/>
+                                <path fill="#EA4335" d="M10 3.88c1.88 0 3.13.81 3.85 1.48l2.84-2.76C14.96.99 12.7 0 10 0 6.09 0 2.72 2.25 1.07 5.51l3.24 2.52C5.12 5.62 7.36 3.88 10 3.88z"/>
+                            </svg>
+                            {loading ? 'Connecting to Gmail...' : 'Sign up & connect Gmail'}
+                        </button>
+
+                        <div className="trust-message">
+                            🔒 <strong>Echo only reads support-related emails.</strong><br/>
+                            Nothing is sent or changed. We only need read-only access to detect patterns in your support conversations.
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Setup Component
+        function Setup({ onComplete }) {
+            const [emails, setEmails] = useState({ 'support@': true, 'hello@': true, 'founder@': false });
+            const [timeRange, setTimeRange] = useState('30');
+            const [notionConnected, setNotionConnected] = useState(false);
+
+            const toggleEmail = (email) => {
+                setEmails(prev => ({ ...prev, [email]: !prev[email] }));
+            };
+
+            const handleSubmit = () => {
+                const selectedEmails = Object.keys(emails).filter(k => emails[k]);
+                onComplete({ emails: selectedEmails, timeRange, notionConnected });
+            };
+
+            return (
+                <div className="main-content">
+                    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+                        <h1 className="page-title">Quick Setup</h1>
+                        <p className="page-subtitle">This will only take a minute. We'll scan your inbox for recurring questions.</p>
+
+                        <div className="setup-card">
+                            <div className="form-group">
+                                <label className="form-label">Which emails are customer support?</label>
+                                <div className="checkbox-group">
+                                    <label className="checkbox-label">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={emails['support@']} 
+                                            onChange={() => toggleEmail('support@')} 
+                                        />
+                                        support@
+                                    </label>
+                                    <label className="checkbox-label">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={emails['hello@']} 
+                                            onChange={() => toggleEmail('hello@')} 
+                                        />
+                                        hello@
+                                    </label>
+                                    <label className="checkbox-label">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={emails['founder@']} 
+                                            onChange={() => toggleEmail('founder@')} 
+                                        />
+                                        founder@
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Time range to analyze</label>
+                                <select className="form-select" value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
+                                    <option value="30">Last 30 days</option>
+                                    <option value="60">Last 60 days</option>
+                                    <option value="90">Last 90 days</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group">
+                                <label className="form-label">Where to publish articles?</label>
+                                <div className="notion-option">
+                                    <div className="notion-icon">
+                                        <svg width="32" height="32" viewBox="0 0 100 100" fill="none">
+                                            <path d="M6.017 4.313l55.333 -4.087c6.797 -0.583 8.543 -0.19 12.817 2.917l17.663 12.443c2.913 2.14 3.883 2.723 3.883 5.053v68.243c0 4.277 -1.553 6.807 -6.99 7.193L24.467 99.967c-4.08 0.193 -6.023 -0.39 -8.16 -3.113L3.3 79.94c-2.333 -3.113 -3.3 -5.443 -3.3 -8.167V11.113c0 -3.497 1.553 -6.413 6.017 -6.8z" fill="#fff"/>
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M61.35 0.227l-55.333 4.087C1.553 4.7 0 7.617 0 11.113v60.66c0 2.724 0.967 5.053 3.3 8.167l13.007 16.913c2.137 2.723 4.08 3.307 8.16 3.113l64.257 -3.89c5.433 -0.387 6.99 -2.917 6.99 -7.193V20.64c0 -2.21 -0.873 -2.847 -3.443 -4.733L74.167 3.143c-4.273 -3.107 -6.02 -3.5 -12.817 -2.917zM25.92 19.523c-5.247 0.353 -6.437 0.433 -9.417 -1.99L8.927 11.507c-0.77 -0.78 -0.383 -1.753 1.557 -1.947l53.193 -3.887c4.467 -0.39 6.793 1.167 8.54 2.527l9.123 6.61c0.39 0.197 1.36 1.36 0.193 1.36l-54.933 3.307 -0.68 0.047zM19.803 88.3V30.367c0 -2.53 0.777 -3.697 3.103 -3.893L86 22.78c2.14 -0.193 3.107 1.167 3.107 3.693v57.547c0 2.53 -0.39 4.67 -3.883 4.863l-60.377 3.5c-3.493 0.193 -5.043 -0.97 -5.043 -4.083zm59.6 -54.827c0.387 1.75 0 3.5 -1.75 3.7l-2.91 0.577v42.773c-2.527 1.36 -4.853 2.137 -6.797 2.137 -3.107 0 -3.883 -0.973 -6.21 -3.887l-19.03 -29.94v28.967l6.02 1.363s0 3.5 -4.857 3.5l-13.39 0.777c-0.39 -0.78 0 -2.723 1.357 -3.11l3.497 -0.97v-38.3L30.48 40.667c-0.39 -1.75 0.58 -4.277 3.3 -4.473l14.367 -0.967 19.8 30.327v-26.83l-5.047 -0.58c-0.39 -2.143 1.163 -3.7 3.103 -3.89l13.4 -0.78z" fill="#000"/>
+                                        </svg>
+                                    </div>
+                                    <div className="notion-text">
+                                        <div className="notion-title">Notion</div>
+                                        <div className="notion-subtitle">Publish articles directly to your Notion workspace</div>
+                                    </div>
+                                    <button 
+                                        className="btn-ghost"
+                                        onClick={() => setNotionConnected(!notionConnected)}
+                                    >
+                                        {notionConnected ? '✓ Connected' : 'Connect'}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button 
+                                className="btn-primary" 
+                                onClick={handleSubmit} 
+                                style={{ width: '100%', marginTop: '1rem' }}
+                            >
+                                Start scanning emails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Processing Component
+        function Processing({ onComplete }) {
+            const [emailsScanned, setEmailsScanned] = useState(0);
+            const [currentAction, setCurrentAction] = useState(0);
+
+            const actions = [
+                "Detecting repeated questions",
+                "Grouping similar conversations",
+                "Extracting customer intent"
+            ];
+
+            useEffect(() => {
+                const emailInterval = setInterval(() => {
+                    setEmailsScanned(prev => {
+                        if (prev >= 247) {
+                            clearInterval(emailInterval);
+                            setTimeout(onComplete, 800);
+                            return 247;
+                        }
+                        return prev + Math.floor(Math.random() * 18) + 8;
+                    });
+                }, 180);
+
+                const actionInterval = setInterval(() => {
+                    setCurrentAction(prev => (prev + 1) % actions.length);
+                }, 2000);
+
+                return () => {
+                    clearInterval(emailInterval);
+                    clearInterval(actionInterval);
+                };
+            }, [onComplete]);
+
+            return (
+                <div className="loading-container">
+                    <div className="loading-spinner"></div>
+                    <h2 className="loading-title">Analyzing your inbox...</h2>
+                    <div className="loading-list">
+                        {actions.map((action, idx) => (
+                            <div 
+                                key={idx} 
+                                className="loading-item" 
+                                style={{ 
+                                    opacity: idx === currentAction ? 1 : 0.4,
+                                    fontWeight: idx === currentAction ? 600 : 400,
+                                    color: idx === currentAction ? 'var(--teal)' : 'var(--charcoal)'
+                                }}
+                            >
+                                {idx === currentAction ? '→ ' : '  '}{action}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="loading-progress">{emailsScanned} emails scanned</div>
+                    <p className="loading-subtext">This usually takes 1–2 minutes.</p>
+                </div>
+            );
+        }
+
+        // Dashboard Component
+        function Dashboard({ onCreateArticle, notionConnected }) {
+            const [timeFilter, setTimeFilter] = useState('60');
+            const [sortBy, setSortBy] = useState('frequency');
+
+            const filteredQuestions = MOCK_QUESTIONS.filter(q => q.timeRange <= parseInt(timeFilter));
+            const sortedQuestions = [...filteredQuestions].sort((a, b) => {
+                if (sortBy === 'frequency') return b.frequency - a.frequency;
+                return 0;
+            });
+
+            return (
+                <div className="main-content">
+                    <h1 className="page-title">Recurring Questions</h1>
+                    <p className="page-subtitle">Questions your team answers repeatedly — turn them into help articles</p>
+
+                    <div className="stats-grid">
+                        <div className="stat-card">
+                            <div className="stat-label">Questions Detected</div>
+                            <div className="stat-value">24</div>
+                            <div className="stat-change">From last {timeFilter} days</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="stat-label">Articles Created</div>
+                            <div className="stat-value">0</div>
+                            <div className="stat-change">Create your first one below!</div>
+                        </div>
+                        <div className="stat-card">
+                            <div className="stat-label">Potential Time Saved</div>
+                            <div className="stat-value">~8h</div>
+                            <div className="stat-change">Per week estimated</div>
+                        </div>
+                    </div>
+
+                    <div className="questions-header">
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--ink)' }}>
+                            Top Questions ({sortedQuestions.length})
+                        </h3>
+                        <div className="filter-group">
+                            <span className="filter-label">Time range:</span>
+                            <select className="filter-select" value={timeFilter} onChange={(e) => setTimeFilter(e.target.value)}>
+                                <option value="30">Last 30 days</option>
+                                <option value="60">Last 60 days</option>
+                                <option value="90">Last 90 days</option>
+                            </select>
+                            <span className="filter-label">Sort:</span>
+                            <select className="filter-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                                <option value="frequency">Most repeated</option>
+                                <option value="recent">Most recent</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="questions-list">
+                        {sortedQuestions.map(q => (
+                            <div key={q.id} className="question-card">
+                                <div className="question-badge">{q.frequency}</div>
+                                <div className="question-content">
+                                    <div className="question-title">{q.question}</div>
+                                    <div className="question-meta">
+                                        Seen {q.frequency} times in the last {q.timeRange} days • Sources: {q.sources.join(', ')}
+                                    </div>
+                                </div>
+                                <div className="question-actions">
+                                    <button className="btn-primary" onClick={() => onCreateArticle(q)}>
+                                        Create article →
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {sortedQuestions.length === 0 && (
+                        <div className="empty-state">
+                            <div className="empty-icon">📭</div>
+                            <h3 className="empty-title">No questions found</h3>
+                            <p className="empty-text">Try adjusting your time range filter</p>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // Draft Articles Component
+        function DraftArticles({ drafts, onReview, onDelete }) {
+            return (
+                <div className="main-content">
+                    <h1 className="page-title">Draft Articles</h1>
+                    <p className="page-subtitle">Review AI-generated articles before publishing to your knowledge base</p>
+
+                    {drafts.length > 0 ? (
+                        <div className="questions-list">
+                            {drafts.map(draft => (
+                                <div key={draft.id} className="question-card">
+                                    <span className="badge badge-draft">
+                                        <span className="badge-dot"></span>
+                                        Draft
+                                    </span>
+                                    <div className="question-content" style={{ flex: 1 }}>
+                                        <div className="question-title">{draft.article.title}</div>
+                                        <div className="question-meta">
+                                            Detected from {draft.question.frequency} support emails • Category: {draft.question.category}
+                                        </div>
+                                        <div style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', marginTop: '0.25rem' }}>
+                                            Created {new Date(draft.date).toLocaleDateString()}
+                                        </div>
+                                    </div>
+                                    <div className="question-actions">
+                                        <button className="btn-ghost" onClick={() => onDelete(draft.id)}>
+                                            Delete
+                                        </button>
+                                        <button className="btn-primary" onClick={() => onReview(draft)}>
+                                            Review
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="empty-state">
+                            <svg className="empty-icon" width="120" height="120" viewBox="0 0 200 200" fill="none">
+                                <rect x="60" y="40" width="80" height="120" rx="8" fill="#F5F5F5"/>
+                                <rect x="70" y="60" width="60" height="4" rx="2" fill="#D0D0D0"/>
+                                <rect x="70" y="75" width="50" height="4" rx="2" fill="#D0D0D0"/>
+                                <rect x="70" y="90" width="55" height="4" rx="2" fill="#D0D0D0"/>
+                                <path d="M90 120 L90 140 M80 130 L100 130" stroke="#2A5F5C" strokeWidth="4" strokeLinecap="round"/>
+                            </svg>
+                            <h3 className="empty-title">No draft articles yet</h3>
+                            <p className="empty-text">
+                                Create your first article from the Dashboard by clicking "Create article" on any recurring question.
+                            </p>
+                        </div>
+                    )}
+
+                    {drafts.length > 0 && (
+                        <div style={{ 
+                            marginTop: '2rem', 
+                            padding: '1.5rem', 
+                            background: 'rgba(42, 95, 92, 0.05)', 
+                            borderRadius: '12px',
+                            textAlign: 'center'
+                        }}>
+                            💡 You have <strong style={{ color: 'var(--teal)' }}>{drafts.length} draft article{drafts.length !== 1 ? 's' : ''}</strong> ready for review. 
+                            Publishing them could save ~{Math.floor(drafts.reduce((sum, d) => sum + d.question.frequency, 0) * 2.5)} minutes/week.
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // Knowledge Base Component
+        function KnowledgeBase({ articles }) {
+            const categories = articles.reduce((acc, article) => {
+                const cat = article.question.category;
+                if (!acc[cat]) acc[cat] = [];
+                acc[cat].push(article);
+                return acc;
+            }, {});
+
+            const categoryIcons = {
+                "Getting Started": "🛠️",
+                "Features": "📊",
+                "Account & Login": "🔐",
+                "Security": "🔒",
+                "Billing": "💳",
+                "Troubleshooting": "❓"
+            };
+
+            return (
+                <div className="main-content">
+                    <h1 className="page-title">Knowledge Base</h1>
+                    <p className="page-subtitle">Your published help articles, automatically generated from support conversations</p>
+
+                    {articles.length > 0 ? (
+                        <>
+                            <div className="stats-grid" style={{ marginBottom: '3rem' }}>
+                                <div className="stat-card">
+                                    <div className="stat-label">Total Articles</div>
+                                    <div className="stat-value">{articles.length}</div>
+                                    <div className="stat-change">Published and live</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-label">Categories</div>
+                                    <div className="stat-value">{Object.keys(categories).length}</div>
+                                    <div className="stat-change">Organized topics</div>
+                                </div>
+                                <div className="stat-card">
+                                    <div className="stat-label">Time Saved</div>
+                                    <div className="stat-value">~{Math.floor(articles.reduce((sum, a) => sum + a.question.frequency, 0) * 2.5)}m</div>
+                                    <div className="stat-change">Per week</div>
+                                </div>
+                            </div>
+
+                            <h2 style={{ fontSize: '1.5rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--ink)' }}>
+                                Browse by Category
+                            </h2>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                                {Object.entries(categories).map(([category, categoryArticles]) => (
+                                    <div key={category} style={{
+                                        background: 'var(--white)',
+                                        padding: '1.5rem',
+                                        borderRadius: '12px',
+                                        border: '1px solid var(--gray-200)'
+                                    }}>
+                                        <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+                                            {categoryIcons[category] || '📄'}
+                                        </div>
+                                        <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--ink)' }}>
+                                            {category}
+                                        </h3>
+                                        <div style={{ fontSize: '0.875rem', color: 'var(--charcoal)', marginBottom: '1rem' }}>
+                                            {categoryArticles.length} article{categoryArticles.length !== 1 ? 's' : ''}
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                                            {categoryArticles.map(article => (
+                                                <div key={article.question.id} style={{
+                                                    fontSize: '0.875rem',
+                                                    color: 'var(--teal)',
+                                                    cursor: 'pointer'
+                                                }}>
+                                                    → {article.article.title}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </>
+                    ) : (
+                        <div className="empty-state">
+                            <svg className="empty-icon" width="120" height="120" viewBox="0 0 200 200" fill="none">
+                                <path d="M60 40h80v120H60z" fill="#F5F5F5"/>
+                                <path d="M70 60h60M70 80h55M70 100h60M70 120h50" stroke="#D0D0D0" strokeWidth="3" strokeLinecap="round"/>
+                                <circle cx="100" cy="100" r="70" stroke="#2A5F5C" strokeWidth="3" opacity="0.2"/>
+                                <path d="M100 80 L100 120 M80 100 L120 100" stroke="#2A5F5C" strokeWidth="4" strokeLinecap="round"/>
+                            </svg>
+                            <h3 className="empty-title">No published articles yet</h3>
+                            <p className="empty-text">
+                                Your knowledge base will appear here once you publish your first article.
+                            </p>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        // Settings Component
+        function Settings({ settings, onUpdateSettings, user }) {
+            const [localSettings, setLocalSettings] = useState(settings || {
+                emails: { 'support@': true, 'hello@': true, 'founder@': false },
+                timeRange: '60',
+                notionConnected: false
+            });
+
+            const toggleEmail = (email) => {
+                setLocalSettings(prev => ({
+                    ...prev,
+                    emails: { ...prev.emails, [email]: !prev.emails[email] }
+                }));
+            };
+
+            const handleSave = () => {
+                onUpdateSettings(localSettings);
+                alert('Settings saved successfully!');
+            };
+
+            return (
+                <div className="main-content">
+                    <h1 className="page-title">Settings</h1>
+                    <p className="page-subtitle">Manage your Echo configuration and integrations</p>
+
+                    <div style={{ display: 'grid', gap: '2rem', maxWidth: '800px' }}>
+                        {/* Account Settings */}
+                        <div style={{ background: 'var(--white)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--gray-200)' }}>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--ink)' }}>
+                                Account
+                            </h2>
+                            <div className="form-group">
+                                <label className="form-label">Email</label>
+                                <input 
+                                    type="email" 
+                                    className="form-input" 
+                                    value={user?.email || ''} 
+                                    disabled 
+                                    style={{ background: 'var(--gray-50)', cursor: 'not-allowed' }}
+                                />
+                            </div>
+                            <div className="form-group" style={{ marginBottom: 0 }}>
+                                <label className="form-label">Plan</label>
+                                <div style={{ 
+                                    padding: '1rem', 
+                                    background: 'var(--gray-50)', 
+                                    borderRadius: '6px',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}>
+                                    <div>
+                                        <div style={{ fontWeight: 600, color: 'var(--ink)' }}>Free Trial</div>
+                                        <div style={{ fontSize: '0.875rem', color: 'var(--charcoal)' }}>14 days remaining</div>
+                                    </div>
+                                    <button className="btn-primary" style={{ padding: '0.5rem 1rem' }}>
+                                        Upgrade
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Email Monitoring */}
+                        <div style={{ background: 'var(--white)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--gray-200)' }}>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--ink)' }}>
+                                Email Monitoring
+                            </h2>
+                            <div className="form-group">
+                                <label className="form-label">Support email addresses</label>
+                                <div className="checkbox-group">
+                                    {Object.entries(localSettings.emails).map(([email, checked]) => (
+                                        <label key={email} className="checkbox-label">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={checked} 
+                                                onChange={() => toggleEmail(email)} 
+                                            />
+                                            {email}
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="form-group" style={{ marginBottom: 0 }}>
+                                <label className="form-label">Scan time range</label>
+                                <select 
+                                    className="form-select" 
+                                    value={localSettings.timeRange} 
+                                    onChange={(e) => setLocalSettings({ ...localSettings, timeRange: e.target.value })}
+                                >
+                                    <option value="30">Last 30 days</option>
+                                    <option value="60">Last 60 days</option>
+                                    <option value="90">Last 90 days</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* Integrations */}
+                        <div style={{ background: 'var(--white)', padding: '2rem', borderRadius: '12px', border: '1px solid var(--gray-200)' }}>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: 'var(--ink)' }}>
+                                Integrations
+                            </h2>
+                            
+                            <div className="notion-option" style={{ marginTop: 0 }}>
+                                <div className="notion-icon">
+                                    <svg width="32" height="32" viewBox="0 0 100 100" fill="none">
+                                        <path d="M6.017 4.313l55.333 -4.087c6.797 -0.583 8.543 -0.19 12.817 2.917l17.663 12.443c2.913 2.14 3.883 2.723 3.883 5.053v68.243c0 4.277 -1.553 6.807 -6.99 7.193L24.467 99.967c-4.08 0.193 -6.023 -0.39 -8.16 -3.113L3.3 79.94c-2.333 -3.113 -3.3 -5.443 -3.3 -8.167V11.113c0 -3.497 1.553 -6.413 6.017 -6.8z" fill="#fff"/>
+                                        <path fillRule="evenodd" clipRule="evenodd" d="M61.35 0.227l-55.333 4.087C1.553 4.7 0 7.617 0 11.113v60.66c0 2.724 0.967 5.053 3.3 8.167l13.007 16.913c2.137 2.723 4.08 3.307 8.16 3.113l64.257 -3.89c5.433 -0.387 6.99 -2.917 6.99 -7.193V20.64c0 -2.21 -0.873 -2.847 -3.443 -4.733L74.167 3.143c-4.273 -3.107 -6.02 -3.5 -12.817 -2.917zM25.92 19.523c-5.247 0.353 -6.437 0.433 -9.417 -1.99L8.927 11.507c-0.77 -0.78 -0.383 -1.753 1.557 -1.947l53.193 -3.887c4.467 -0.39 6.793 1.167 8.54 2.527l9.123 6.61c0.39 0.197 1.36 1.36 0.193 1.36l-54.933 3.307 -0.68 0.047zM19.803 88.3V30.367c0 -2.53 0.777 -3.697 3.103 -3.893L86 22.78c2.14 -0.193 3.107 1.167 3.107 3.693v57.547c0 2.53 -0.39 4.67 -3.883 4.863l-60.377 3.5c-3.493 0.193 -5.043 -0.97 -5.043 -4.083zm59.6 -54.827c0.387 1.75 0 3.5 -1.75 3.7l-2.91 0.577v42.773c-2.527 1.36 -4.853 2.137 -6.797 2.137 -3.107 0 -3.883 -0.973 -6.21 -3.887l-19.03 -29.94v28.967l6.02 1.363s0 3.5 -4.857 3.5l-13.39 0.777c-0.39 -0.78 0 -2.723 1.357 -3.11l3.497 -0.97v-38.3L30.48 40.667c-0.39 -1.75 0.58 -4.277 3.3 -4.473l14.367 -0.967 19.8 30.327v-26.83l-5.047 -0.58c-0.39 -2.143 1.163 -3.7 3.103 -3.89l13.4 -0.78z" fill="#000"/>
+                                    </svg>
+                                </div>
+                                <div className="notion-text">
+                                    <div className="notion-title">Notion</div>
+                                    <div className="notion-subtitle">
+                                        {localSettings.notionConnected ? 'Connected to your workspace' : 'Publish articles to Notion'}
+                                    </div>
+                                </div>
+                                <button 
+                                    className={localSettings.notionConnected ? "btn-ghost" : "btn-primary"}
+                                    style={{ padding: '0.5rem 1rem' }}
+                                    onClick={() => setLocalSettings({ ...localSettings, notionConnected: !localSettings.notionConnected })}
+                                >
+                                    {localSettings.notionConnected ? 'Disconnect' : 'Connect'}
+                                </button>
+                            </div>
+
+                            <div className="notion-option">
+                                <div className="notion-icon">
+                                    <svg width="32" height="32" viewBox="0 0 48 48">
+                                        <path fill="#4caf50" d="M45,16.2l-5,2.75l-5,4.75L35,40h7c1.657,0,3-1.343,3-3V16.2z"/>
+                                        <path fill="#1e88e5" d="M3,16.2l3.614,1.71L13,23.7V40H6c-1.657,0-3-1.343-3-3V16.2z"/>
+                                        <polygon fill="#e53935" points="35,11.2 24,19.45 13,11.2 12,17 13,23.7 24,31.95 35,23.7 36,17"/>
+                                        <path fill="#c62828" d="M3,12.298V16.2l10,7.5V11.2L9.876,8.859C9.132,8.301,8.228,8,7.298,8h0C4.924,8,3,9.924,3,12.298z"/>
+                                        <path fill="#fbc02d" d="M45,12.298V16.2l-10,7.5V11.2l3.124-2.341C38.868,8.301,39.772,8,40.702,8h0 C43.076,8,45,9.924,45,12.298z"/>
+                                    </svg>
+                                </div>
+                                <div className="notion-text">
+                                    <div className="notion-title">Gmail</div>
+                                    <div className="notion-subtitle">Connected as {user?.email}</div>
+                                </div>
+                                <button className="btn-ghost" style={{ padding: '0.5rem 1rem' }}>
+                                    ✓ Connected
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Save Button */}
+                        <button className="btn-primary" onClick={handleSave} style={{ width: '100%' }}>
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Article Editor Component
+        function ArticleEditor({ question, onPublish, onDiscard, notionConnected }) {
+            const article = generateArticleContent(question.question);
+            const [publishing, setPublishing] = useState(false);
+
+            const handlePublish = () => {
+                setPublishing(true);
+                setTimeout(() => {
+                    onPublish(question, article);
+                }, 1000);
+            };
+
+            return (
+                <div className="main-content">
+                    <div className="editor-header">
+                        <button className="btn-ghost" onClick={onDiscard}>
+                            ← Back
+                        </button>
+                        <span className="badge badge-draft">
+                            <span className="badge-dot"></span>
+                            Draft
+                        </span>
+                        <h1 className="page-title" style={{ margin: 0, flex: 1 }}>Review Article Draft</h1>
+                        <button className="btn-secondary" onClick={onDiscard}>Discard</button>
+                        <button className="btn-primary" onClick={handlePublish} disabled={publishing}>
+                            {publishing ? 'Publishing...' : (notionConnected ? 'Publish to Notion' : 'Approve & Publish')}
+                        </button>
+                    </div>
+
+                    <div className="editor-container">
+                        <div className="editor-main">
+                            <h2 className="editor-title">{article.title}</h2>
+                            <div 
+                                className="editor-content" 
+                                dangerouslySetInnerHTML={{ __html: article.content }}
+                            ></div>
+
+                            {article.protip && (
+                                <div className="protip-box">
+                                    <div className="protip-title">💡 Pro tip</div>
+                                    <div className="protip-text">{article.protip}</div>
+                                </div>
+                            )}
+
+                            <div className="edit-hint">
+                                Click anywhere to edit • Echo learns your writing style
+                            </div>
+                        </div>
+
+                        <div className="editor-sidebar">
+                            <h3 style={{ fontSize: '1.125rem', fontWeight: 600, marginBottom: '1rem' }}>AI Insights</h3>
+                            
+                            <div className="insight-card">
+                                <div className="insight-title">📊 Pattern detected</div>
+                                <div className="insight-text">
+                                    Asked {question.frequency} times in the last {question.timeRange} days
+                                </div>
+                                <div className="insight-subtext">
+                                    Sources: {question.sources.join(', ')}
+                                </div>
+                            </div>
+
+                            <div className="insight-card">
+                                <div className="insight-title">✍️ Content source</div>
+                                <div className="insight-text">
+                                    Generated from {Math.floor(question.frequency * 0.6)} support conversations
+                                </div>
+                            </div>
+
+                            <div className="insight-card">
+                                <div className="insight-title">⏱️ Estimated time saved</div>
+                                <div className="insight-text">
+                                    ~{Math.floor(question.frequency * 2.5)} minutes per week
+                                </div>
+                                <div className="insight-subtext">
+                                    Based on average response time
+                                </div>
+                            </div>
+
+                            <hr style={{ margin: '1.5rem 0', border: 'none', borderTop: '1px solid var(--gray-200)' }}/>
+
+                            <div className="form-group">
+                                <label className="form-label">Category</label>
+                                <select className="form-select" defaultValue={question.category}>
+                                    <option>{question.category}</option>
+                                    <option>Getting Started</option>
+                                    <option>Features</option>
+                                    <option>Account & Login</option>
+                                    <option>Billing</option>
+                                    <option>Security</option>
+                                    <option>Troubleshooting</option>
+                                </select>
+                            </div>
+
+                            {notionConnected && (
+                                <div className="form-group">
+                                    <label className="form-label">Publish to</label>
+                                    <select className="form-select">
+                                        <option>Help Center / Getting Started</option>
+                                        <option>Help Center / FAQs</option>
+                                        <option>Documentation / Guides</option>
+                                    </select>
+                                </div>
+                            )}
+
+                            <div style={{ 
+                                padding: '1rem', 
+                                background: 'rgba(42, 95, 92, 0.05)', 
+                                borderRadius: '6px', 
+                                fontSize: '0.8125rem', 
+                                color: 'var(--charcoal)',
+                                lineHeight: 1.6
+                            }}>
+                                💡 <strong>You're always in control.</strong><br/>
+                                Echo never publishes without your approval.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Main App Component
+        function App() {
+            const [user, setUser] = useState(null);
+            const [view, setView] = useState('login');
+            const [selectedQuestion, setSelectedQuestion] = useState(null);
+            const [settings, setSettings] = useState(null);
+            const [toast, setToast] = useState(null);
+            const [publishedArticles, setPublishedArticles] = useState([]);
+            const [draftArticles, setDraftArticles] = useState([]);
+
+            const handleLogin = (userData) => {
+                setUser(userData);
+                setView('setup');
+            };
+
+            const handleSetupComplete = (setupSettings) => {
+                setSettings(setupSettings);
+                setView('processing');
+            };
+
+            const handleProcessingComplete = () => {
+                setView('dashboard');
+            };
+
+            const handleCreateArticle = (question) => {
+                const article = generateArticleContent(question.question);
+                const draft = {
+                    id: Date.now(),
+                    question,
+                    article,
+                    date: new Date()
+                };
+                setDraftArticles([...draftArticles, draft]);
+                setSelectedQuestion(question);
+                setView('editor');
+            };
+
+            const handlePublish = (question, article) => {
+                // Remove from drafts
+                setDraftArticles(draftArticles.filter(d => d.question.id !== question.id));
+                
+                // Add to published
+                setPublishedArticles([...publishedArticles, { 
+                    id: Date.now(),
+                    question, 
+                    article, 
+                    date: new Date() 
+                }]);
+                
+                setToast({
+                    message: "Article published successfully!",
+                    subtext: `This article could reduce ~${question.frequency} future emails.`
+                });
+                setView('dashboard');
+                setSelectedQuestion(null);
+            };
+
+            const handleDiscard = () => {
+                setView('dashboard');
+                setSelectedQuestion(null);
+            };
+
+            const handleReviewDraft = (draft) => {
+                setSelectedQuestion(draft.question);
+                setView('editor');
+            };
+
+            const handleDeleteDraft = (draftId) => {
+                if (confirm('Are you sure you want to delete this draft?')) {
+                    setDraftArticles(draftArticles.filter(d => d.id !== draftId));
+                    setToast({
+                        message: "Draft deleted",
+                        subtext: null
+                    });
+                }
+            };
+
+            const handleUpdateSettings = (newSettings) => {
+                setSettings(newSettings);
+            };
+
+            const handleLogout = () => {
+                setUser(null);
+                setView('login');
+                setSettings(null);
+                setPublishedArticles([]);
+                setDraftArticles([]);
+            };
+
+            if (view === 'login') {
+                return <Login onLogin={handleLogin} />;
+            }
+
+            if (view === 'setup') {
+                return (
+                    <div className="app-container">
+                        <header className="header">
+                            <div className="logo">
+                                <svg className="logo-icon" viewBox="0 0 100 100" fill="none">
+                                    <circle cx="50" cy="50" r="35" stroke="#2A5F5C" strokeWidth="4" fill="none"/>
+                                    <circle cx="50" cy="50" r="25" stroke="#2A5F5C" strokeWidth="3" fill="none" opacity="0.6"/>
+                                    <circle cx="50" cy="50" r="15" fill="#2A5F5C"/>
+                                </svg>
+                                Echo
+                            </div>
+                        </header>
+                        <Setup onComplete={handleSetupComplete} />
+                    </div>
+                );
+            }
+
+            if (view === 'processing') {
+                return (
+                    <div className="app-container">
+                        <header className="header">
+                            <div className="logo">
+                                <svg className="logo-icon" viewBox="0 0 100 100" fill="none">
+                                    <circle cx="50" cy="50" r="35" stroke="#2A5F5C" strokeWidth="4" fill="none"/>
+                                    <circle cx="50" cy="50" r="25" stroke="#2A5F5C" strokeWidth="3" fill="none" opacity="0.6"/>
+                                    <circle cx="50" cy="50" r="15" fill="#2A5F5C"/>
+                                </svg>
+                                Echo
+                            </div>
+                        </header>
+                        <Processing onComplete={handleProcessingComplete} />
+                    </div>
+                );
+            }
+
+            return (
+                <div className="app-container">
+                    <header className="header">
+                        <div className="logo">
+                            <svg className="logo-icon" viewBox="0 0 100 100" fill="none">
+                                <circle cx="50" cy="50" r="35" stroke="#2A5F5C" strokeWidth="4" fill="none"/>
+                                <circle cx="50" cy="50" r="25" stroke="#2A5F5C" strokeWidth="3" fill="none" opacity="0.6"/>
+                                <circle cx="50" cy="50" r="15" fill="#2A5F5C"/>
+                            </svg>
+                            Echo
+                        </div>
+                        <div className="user-menu">
+                            <span className="user-email">{user?.email}</span>
+                            <button className="btn-logout" onClick={handleLogout}>Logout</button>
+                        </div>
+                    </header>
+
+                    <div className="app-layout">
+                        <aside className="sidebar">
+                            <div 
+                                className={`nav-item ${view === 'dashboard' ? 'active' : ''}`}
+                                onClick={() => setView('dashboard')}
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="3" width="7" height="7"></rect>
+                                    <rect x="14" y="14" width="7" height="7"></rect>
+                                    <rect x="3" y="14" width="7" height="7"></rect>
+                                </svg>
+                                Dashboard
+                            </div>
+                            <div 
+                                className={`nav-item ${view === 'drafts' ? 'active' : ''}`}
+                                onClick={() => setView('drafts')}
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                                    <polyline points="10 9 9 9 8 9"></polyline>
+                                </svg>
+                                Draft Articles {draftArticles.length > 0 && `(${draftArticles.length})`}
+                            </div>
+                            <div 
+                                className={`nav-item ${view === 'knowledge-base' ? 'active' : ''}`}
+                                onClick={() => setView('knowledge-base')}
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                                </svg>
+                                Knowledge Base {publishedArticles.length > 0 && `(${publishedArticles.length})`}
+                            </div>
+                            <div 
+                                className={`nav-item ${view === 'settings' ? 'active' : ''}`}
+                                onClick={() => setView('settings')}
+                            >
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M12 1v6m0 6v6"></path>
+                                    <path d="m4.2 4.2 4.2 4.2m5.6 5.6 4.2 4.2M1 12h6m6 0h6"></path>
+                                    <path d="m4.2 19.8 4.2-4.2m5.6-5.6 4.2-4.2"></path>
+                                </svg>
+                                Settings
+                            </div>
+                        </aside>
+
+                        {view === 'dashboard' && (
+                            <Dashboard 
+                                onCreateArticle={handleCreateArticle}
+                                notionConnected={settings?.notionConnected}
+                            />
+                        )}
+                        {view === 'drafts' && (
+                            <DraftArticles
+                                drafts={draftArticles}
+                                onReview={handleReviewDraft}
+                                onDelete={handleDeleteDraft}
+                            />
+                        )}
+                        {view === 'knowledge-base' && (
+                            <KnowledgeBase articles={publishedArticles} />
+                        )}
+                        {view === 'settings' && (
+                            <Settings 
+                                settings={settings}
+                                onUpdateSettings={handleUpdateSettings}
+                                user={user}
+                            />
+                        )}
+                        {view === 'editor' && (
+                            <ArticleEditor 
+                                question={selectedQuestion} 
+                                onPublish={handlePublish}
+                                onDiscard={handleDiscard}
+                                notionConnected={settings?.notionConnected}
+                            />
+                        )}
+                    </div>
+
+                    {toast && (
+                        <Toast 
+                            message={toast.message}
+                            subtext={toast.subtext}
+                            onClose={() => setToast(null)}
+                        />
+                    )}
+                </div>
+            );
+        }
+
+        // Render App
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
