@@ -63,7 +63,6 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: relative;
         }
 
         .logo {
@@ -76,9 +75,6 @@
             align-items: center;
             gap: 0.6rem;
             text-decoration: none;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
         }
 
         .header-cta {
@@ -101,6 +97,7 @@
         .hero {
             padding: 5rem 0 6rem;
             position: relative;
+            text-align: center;
         }
 
         .hero-eyebrow {
@@ -140,6 +137,8 @@
             letter-spacing: -0.04em;
             margin-bottom: 1.5rem;
             max-width: 860px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         h1 em {
@@ -154,6 +153,8 @@
             max-width: 580px;
             margin-bottom: 2.5rem;
             line-height: 1.65;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* ── IMPACT NUMBERS ── */
@@ -162,6 +163,7 @@
             gap: 2.5rem;
             flex-wrap: wrap;
             margin-bottom: 3rem;
+            justify-content: center;
         }
 
         .impact-item {
@@ -194,6 +196,9 @@
             max-width: 580px;
             position: relative;
             overflow: hidden;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
         }
 
         .cta-box::before {
@@ -762,6 +767,8 @@
             .example-arrow { transform: rotate(90deg); }
             .steps { grid-template-columns: 1fr; }
             .screenshots-tabs { overflow-x: auto; }
+            .security-grid { grid-template-columns: 1fr; }
+            .logo { position: static; transform: none; }
         }
     </style>
 </head>
