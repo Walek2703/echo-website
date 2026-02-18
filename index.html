@@ -1213,9 +1213,8 @@
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-// Supabase project URL and anon key
 const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4gNON_KEY'; // replace with your actual anon key
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g'; // replace with your anon public key
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -1234,27 +1233,24 @@ form.addEventListener("submit", async (event) => {
   button.textContent = "Submitting...";
 
   try {
-    // INSERT into the correct table
     const { data, error } = await supabase.from("emails").insert([{ email }]);
+    console.log({ data, error });
 
     if (error) {
-      console.error("Supabase insert error:", error);
       alert("Error submitting email: " + error.message);
     } else {
-      console.log("Email inserted:", data);
-      alert("Thanks! Your email has been saved.");
+      alert("Success! Email saved.");
       form.reset();
     }
   } catch (err) {
     console.error("Unexpected error:", err);
-    alert("Something went wrong. Check console for details.");
+    alert("Something went wrong. Check console.");
   } finally {
     button.disabled = false;
     button.textContent = originalText;
   }
 });
 </script>
-
 </form>
 
 </script>
