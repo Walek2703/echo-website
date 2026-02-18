@@ -825,7 +825,8 @@
                     <h2>We're onboarding 20 founder-led SaaS teams.</h2>
                     <p>For teams doing 30–300 support emails/month. You get white-glove onboarding and direct access to the founding team.</p>
                     <form class="email-form" onsubmit="handleSubmit(event)">
-                        <input type="email" class="email-input" placeholder="your@email.com" required>
+                        <input type="email" id="email" name="email" class="email-input" placeholder="your@email.com" autocomplete="email" required>
+
                         <button type="submit" class="submit-btn">Apply for Beta</button>
                     </form>
                     <div class="cta-meta">No credit card. You'll hear back within 48 hours.</div>
