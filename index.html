@@ -1211,51 +1211,30 @@
 
 <!-- SUPABASE CLIENT VIA ESM -->
 
+
 <script type="module">
-    console.log("SCRIPT LOADED");
+console.log("SCRIPT LOADED");
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+document.addEventListener("DOMContentLoaded", () => {
 
-const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g'; // replace with your anon public key
+  const form = document.getElementById("email-form");
+  console.log("Form element:", form);
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-const form = document.getElementById("email-form");
-console.log("Form element:", form);
-
-
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  console.log("FORM SUBMITTED");
-
-  const emailInput = form.querySelector("#email");
-  const email = emailInput.value.trim();
-  if (!email) return;
-
-  const button = form.querySelector(".submit-btn");
-  const originalText = button.textContent;
-  button.disabled = true;
-  button.textContent = "Submitting...";
-
-  try {
-    const { data, error } = await supabase.from("emails").insert([{ email }]);
-    console.log({ data, error });
-
-    if (error) {
-      alert("Error submitting email: " + error.message);
-    } else {
-      alert("Success! Email saved.");
-      form.reset();
-    }
-  } catch (err) {
-    console.error("Unexpected error:", err);
-    alert("Something went wrong. Check console.");
-  } finally {
-    button.disabled = false;
-    button.textContent = originalText;
+  if (!form) {
+    console.error("Form not found!");
+    return;
   }
+
+  const button = form.querySelector("button");
+  console.log("Button element:", button);
+
+  button.addEventListener("click", () => {
+    console.log("BUTTON CLICKED");
+  });
+
 });
+</script>
+
 </script>
 </form>
 
