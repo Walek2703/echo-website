@@ -1213,12 +1213,14 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
   const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g'; // replace with your anon key
-  window.supabase = window.supabase || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g'; // replace with your actual anon key
+
+  // Use the global Supabase object from the UMD build
+  const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const form = document.getElementById("email-form");
 
-  form.addEventListener("submit", function (event) {
+  form.addEventListener("submit", function(event) {
     event.preventDefault();
 
     (async function() {
@@ -1232,7 +1234,7 @@ document.addEventListener("DOMContentLoaded", function () {
       button.textContent = "Submitting...";
 
       try {
-        await window.supabase.from("emails").insert([{ email }]);
+        await supabase.from("early_access").insert([{ email }]);
         form.reset();
       } catch (err) {
         console.error("Supabase error:", err);
@@ -1244,10 +1246,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 </script>
-
-
         
-    </script>
 </body>
 
 </body>
