@@ -1194,64 +1194,71 @@
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/dist/supabase.min.js"></script>
+<<!-- Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
+    <script>
+        // Supabase Configuration
+        const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g'; // ⚠️ REPLACE WITH YOUR ACTUAL KEY
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g"; // replace with your anon key
-  const supabaseClient = Supabase.createClient(supabaseUrl, supabaseKey);
-
-  const form = document.getElementById("email-form");
-  const emailInput = document.getElementById("email");
-
-  if (!form || !emailInput) {
-    console.error("Form or email input not found");
-    return;
-  }
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    (async function submitEmail() {
-      const email = emailInput.value.trim();
-      if (!email) {
-        alert("Please enter your email.");
-        return;
-      }
-
-      const submitBtn = document.getElementById("submit-button");
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Submitting...";
-
-      try {
-        const { data, error } = await supabaseClient
-          .from("emails")
-          .insert([{ email }]);
-
-        if (error) {
-          console.error("Supabase error:", error);
-          alert("Something went wrong. Please try again.");
-        } else {
-          alert("You're on the list!");
-          form.reset();
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const email = event.target.querySelector('.email-input').value;
+            const submitButton = event.target.querySelector('.submit-btn');
+            const originalButtonText = submitButton.textContent;
+            
+            // Check if Supabase key is configured
+            if (SUPABASE_ANON_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g') {
+                alert('⚠️ Configuration Required\n\nPlease add your Supabase anon key to enable email collection.\n\nGet it from: Supabase Dashboard → Settings → API');
+                console.error('🔴 SETUP: Add your Supabase anon key on line 419');
+                return;
+            }
+            
+            // Disable button and show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            
+            console.log('📧 Submitting email:', email);
+            
+            try {
+                // Insert email into Supabase
+                const { data, error } = await supabase
+                    .from('early_access')
+                    .insert([{ email: email }])
+                    .select();
+                
+                if (error) {
+                    console.error('❌ Supabase error:', error);
+                    
+                    // Handle specific errors
+                    if (error.code === '42P01') {
+                        alert('⚠️ Database Setup Required\n\nThe "early_access" table doesn\'t exist.\n\nPlease create it in Supabase using the SQL code provided.');
+                    } else if (error.code === '23505') {
+                        alert('✅ Already Subscribed!\n\nThis email is already on the early access list.');
+                        event.target.reset();
+                    } else if (error.message.includes('JWT')) {
+                        alert('⚠️ Configuration Error\n\nYour Supabase key appears to be invalid.\n\nPlease check that you copied the correct "anon public" key.');
+                    } else {
+                        alert('❌ Submission Failed\n\n' + error.message + '\n\nPlease try again or contact support.');
+                    }
+                } else {
+                    console.log('✅ Email saved successfully!', data);
+                    alert('🎉 Success!\n\nThanks for joining! We\'ll notify you when Echo launches.');
+                    event.target.reset();
+                }
+            } catch (err) {
+                console.error('❌ Unexpected error:', err);
+                alert('❌ Something went wrong.\n\nPlease check your internet connection and try again.');
+            } finally {
+                // Re-enable button
+                submitButton.disabled = false;
+                submitButton.textContent = originalButtonText;
+            }
         }
-      } catch (err) {
-        console.error("Unexpected error:", err);
-        alert("Something went wrong. Please try again.");
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Apply for Beta";
-      }
-    })();
-
-  });
-
-});
-</script>
-
-    
     </script>
 </body>
 
