@@ -1224,8 +1224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.error("Form not found!");
     return;
   }
-
-  const button = form.querySelector("button");
+  const button = document.querySelector("button");
   console.log("Button element:", button);
 
   button.addEventListener("click", () => {
