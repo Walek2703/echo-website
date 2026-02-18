@@ -1211,44 +1211,40 @@
 
 <!-- SUPABASE CLIENT -->
 
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g'; // replace with your actual anon key
+const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Use the global Supabase object from the UMD build
-  const supabase = Supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const form = document.getElementById("email-form");
 
-  const form = document.getElementById("email-form");
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const emailInput = form.querySelector("#email");
+  const email = emailInput.value.trim();
+  if (!email) return;
 
-  form.addEventListener("submit", function(event) {
-    event.preventDefault();
+  const button = form.querySelector(".submit-btn");
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = "Submitting...";
 
-    (async function() {
-      const emailInput = form.querySelector("#email");
-      const email = emailInput.value.trim();
-      if (!email) return;
-
-      const button = form.querySelector(".submit-btn");
-      const originalText = button.textContent;
-      button.disabled = true;
-      button.textContent = "Submitting...";
-
-      try {
-        await supabase.from("early_access").insert([{ email }]);
-        form.reset();
-      } catch (err) {
-        console.error("Supabase error:", err);
-      } finally {
-        button.disabled = false;
-        button.textContent = originalText;
-      }
-    })();
-  });
+  try {
+    await supabase.from("early_access").insert([{ email }]);
+    form.reset();
+  } catch (err) {
+    console.error("Supabase error:", err);
+  } finally {
+    button.disabled = false;
+    button.textContent = originalText;
+  }
 });
 </script>
-        
+
+
+
 </body>
 
 </body>
