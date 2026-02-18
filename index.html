@@ -1195,33 +1195,35 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     </script>
-        <!-- FORM -->
+        <!-- EMAIL FORM -->
 <form id="email-form">
   <label for="email">Email</label>
-  <input
-    type="email"
-    id="email"
-    name="email"
-    placeholder="you@example.com"
-    autocomplete="email"
+  <input 
+    type="email" 
+    id="email" 
+    name="email" 
+    placeholder="you@example.com" 
+    autocomplete="email" 
     required
   >
   <button type="submit" class="submit-btn">Apply for Beta</button>
 </form>
 
-<!-- SUPABASE CLIENT -->
-
+<!-- SUPABASE CLIENT VIA ESM -->
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
+// Supabase project URL and anon key
 const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g';
+const SUPABASE_ANON_KEY = 'YOUR_AeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4gNON_KEY'; // replace with your actual anon key
+
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const form = document.getElementById("email-form");
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+
   const emailInput = form.querySelector("#email");
   const email = emailInput.value.trim();
   if (!email) return;
@@ -1232,10 +1234,20 @@ form.addEventListener("submit", async (event) => {
   button.textContent = "Submitting...";
 
   try {
-    await supabase.from("emails").insert([{ email }]);
-    form.reset();
+    // INSERT into the correct table
+    const { data, error } = await supabase.from("emails").insert([{ email }]);
+
+    if (error) {
+      console.error("Supabase insert error:", error);
+      alert("Error submitting email: " + error.message);
+    } else {
+      console.log("Email inserted:", data);
+      alert("Thanks! Your email has been saved.");
+      form.reset();
+    }
   } catch (err) {
-    console.error("Supabase error:", err);
+    console.error("Unexpected error:", err);
+    alert("Something went wrong. Check console for details.");
   } finally {
     button.disabled = false;
     button.textContent = originalText;
@@ -1243,7 +1255,9 @@ form.addEventListener("submit", async (event) => {
 });
 </script>
 
+</form>
 
+</script>
 
 </body>
 
