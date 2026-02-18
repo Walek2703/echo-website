@@ -1213,25 +1213,51 @@
 
 
 <script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
 console.log("SCRIPT LOADED");
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  const form = document.getElementById("email-form");
-  console.log("Form element:", form);
-
-  if (!form) {
-    console.error("Form not found!");
-    return;
-  }
+  const emailInput = document.getElementById("email");
   const button = document.querySelector("button");
-  console.log("Button element:", button);
 
-  button.addEventListener("click", () => {
-    console.log("BUTTON CLICKED");
+  const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g'; // replace with your anon public key
+  const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  button.addEventListener("click", async () => {
+    const email = emailInput.value.trim();
+    if (!email) return;
+
+    console.log("BUTTON CLICKED, email:", email);
+
+    button.disabled = true;
+    const originalText = button.textContent;
+    button.textContent = "Submitting...";
+
+    try {
+      const { data, error } = await supabase.from("emails").insert([{ email }]);
+      console.log("Supabase response:", { data, error });
+
+      if (error) {
+        alert("Error: " + error.message);
+      } else {
+        alert("Success! Email saved.");
+        emailInput.value = "";
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      alert("Something went wrong.");
+    } finally {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
   });
 
 });
+</script>
+
 </script>
 
 </script>
