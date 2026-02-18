@@ -1225,6 +1225,7 @@ const form = document.getElementById("email-form");
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
+  console.log("FORM SUBMITTED");
 
   const emailInput = form.querySelector("#email");
   const email = emailInput.value.trim();
