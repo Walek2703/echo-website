@@ -1193,7 +1193,6 @@
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     </script>
 
-
 <form id="email-form" novalidate>
   <label for="email">Email</label>
   <input 
@@ -1204,35 +1203,38 @@
     placeholder="you@example.com" 
     required
   >
-  
-  <button type="submit" id="submit-button" name="submit-button">Join Beta</button>
+  <button type="submit" id="submit-button" name="submit-button">Apply for Beta</button>
 </form>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
+  const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
   const supabaseKey = "YOUR_ANON_KEY";
   const supabaseClient = Supabase.createClient(supabaseUrl, supabaseKey);
 
   const form = document.getElementById("email-form");
+  const emailInput = document.getElementById("email");
 
-  if (!form) {
-    console.error("Form not found");
+  if (!form || !emailInput) {
+    console.error("Form or email input not found");
     return;
   }
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const emailInput = document.getElementById("email");
-    if (!emailInput || !emailInput.value.trim()) {
+    const email = emailInput.value.trim();
+    if (!email) {
       alert("Please enter your email.");
       return;
     }
 
-    const email = emailInput.value.trim();
+    // Disable the button while submitting
+    const submitBtn = document.getElementById("submit-button");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
 
     try {
       const { data, error } = await supabaseClient
@@ -1249,12 +1251,14 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (err) {
       console.error("Unexpected error:", err);
       alert("Something went wrong. Please try again.");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Apply for Beta";
     }
   });
 
 });
 </script>
-
 
 </script>
 </body>
