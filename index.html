@@ -1232,7 +1232,7 @@ form.addEventListener("submit", async (event) => {
   button.textContent = "Submitting...";
 
   try {
-    await supabase.from("early_access").insert([{ email }]);
+    await supabase.from("emails").insert([{ email }]);
     form.reset();
   } catch (err) {
     console.error("Supabase error:", err);
