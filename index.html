@@ -1193,72 +1193,60 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     </script>
+        <!-- FORM -->
+<form id="email-form">
+  <label for="email">Email</label>
+  <input
+    type="email"
+    id="email"
+    name="email"
+    placeholder="you@example.com"
+    autocomplete="email"
+    required
+  >
+  <button type="submit" class="submit-btn">Apply for Beta</button>
+</form>
 
-<<!-- Supabase Client Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- SUPABASE CLIENT -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.35.0/dist/supabase.min.js"></script>
 
-    <script>
-        // Supabase Configuration
-        const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g'; // ⚠️ REPLACE WITH YOUR ACTUAL KEY
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const SUPABASE_URL = 'https://lmdmptmezlgbpgxafgdd.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g'; // replace with your anon key
+  window.supabase = window.supabase || window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const form = document.getElementById("email-form");
+
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    (async function() {
+      const emailInput = form.querySelector("#email");
+      const email = emailInput.value.trim();
+      if (!email) return;
+
+      const button = form.querySelector(".submit-btn");
+      const originalText = button.textContent;
+      button.disabled = true;
+      button.textContent = "Submitting...";
+
+      try {
+        await window.supabase.from("emails").insert([{ email }]);
+        form.reset();
+      } catch (err) {
+        console.error("Supabase error:", err);
+      } finally {
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    })();
+  });
+});
+</script>
+
+
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        async function handleSubmit(event) {
-            event.preventDefault();
-            
-            const email = event.target.querySelector('.email-input').value;
-            const submitButton = event.target.querySelector('.submit-btn');
-            const originalButtonText = submitButton.textContent;
-            
-            // Check if Supabase key is configured
-            if (SUPABASE_ANON_KEY === 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g') {
-                alert('⚠️ Configuration Required\n\nPlease add your Supabase anon key to enable email collection.\n\nGet it from: Supabase Dashboard → Settings → API');
-                console.error('🔴 SETUP: Add your Supabase anon key on line 419');
-                return;
-            }
-            
-            // Disable button and show loading state
-            submitButton.disabled = true;
-            submitButton.textContent = 'Submitting...';
-            
-            console.log('📧 Submitting email:', email);
-            
-            try {
-                // Insert email into Supabase
-                const { data, error } = await supabase
-                    .from('early_access')
-                    .insert([{ email: email }])
-                    .select();
-                
-                if (error) {
-                    console.error('❌ Supabase error:', error);
-                    
-                    // Handle specific errors
-                    if (error.code === '42P01') {
-                        alert('⚠️ Database Setup Required\n\nThe "early_access" table doesn\'t exist.\n\nPlease create it in Supabase using the SQL code provided.');
-                    } else if (error.code === '23505') {
-                        alert('✅ Already Subscribed!\n\nThis email is already on the early access list.');
-                        event.target.reset();
-                    } else if (error.message.includes('JWT')) {
-                        alert('⚠️ Configuration Error\n\nYour Supabase key appears to be invalid.\n\nPlease check that you copied the correct "anon public" key.');
-                    } else {
-                        alert('❌ Submission Failed\n\n' + error.message + '\n\nPlease try again or contact support.');
-                    }
-                } else {
-                    console.log('✅ Email saved successfully!', data);
-                    alert('🎉 Success!\n\nThanks for joining! We\'ll notify you when Echo launches.');
-                    event.target.reset();
-                }
-            } catch (err) {
-                console.error('❌ Unexpected error:', err);
-                alert('❌ Something went wrong.\n\nPlease check your internet connection and try again.');
-            } finally {
-                // Re-enable button
-                submitButton.disabled = false;
-                submitButton.textContent = originalButtonText;
-            }
-        }
     </script>
 </body>
 
