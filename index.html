@@ -770,6 +770,7 @@
             .security-grid { grid-template-columns: 1fr; }
             .logo { position: static; transform: none; }
         }
+
     </style>
 </head>
 <body>
@@ -1191,5 +1192,42 @@
 
         document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
     </script>
+
+    <form id="email-form">
+  <input type="email" id="email" required />
+  <button type="submit">Join Beta</button>
+</form>
+
+<!-- Supabase library -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- Your Supabase + form logic -->
+<script>
+  const supabaseUrl = "https://lmdmptmezlgbpgxafgdd.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtZG1wdG1lemxnYnBneGFmZ2RkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA4MDMwMzcsImV4cCI6MjA4NjM3OTAzN30.oVmxq9xLRPk3SbUNdsdbkh0W71DMVHNs9u52-SWpU4g";
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+  const form = document.getElementById("email-form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+
+    const { error } = await supabaseClient
+      .from("emails")
+      .insert([{ email: email }]);
+
+    if (error) {
+      alert("Something went wrong");
+      console.error(error);
+    } else {
+      alert("You're on the list!");
+      form.reset();
+    }
+  });
+</script>
+</body>
+
 </body>
 </html>
